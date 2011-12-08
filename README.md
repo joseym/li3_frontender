@@ -6,7 +6,7 @@ Lithium: <http://lithify.me>
 
 ## Features
 * Seamlessly compile [LessCSS](http://leafo.net/lessphp) templates (requires .less files in css directory)
-  * Requires [LessPHP](http://leafo.net/lessphp)
+  * Requires [LessPHP](http://leafo.net/lessphp) (included in this package: v0.3.0)
 * Automatically adds Cache Busting to styles when page is rendered
 
 ## How to Use
