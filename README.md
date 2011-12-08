@@ -33,4 +33,6 @@ Libraries::add('assets');
 ## Upcoming Features
 * CSS/JS minification
 * CSS Tidying
+* Configuration settings for Libraries::add
+
 
