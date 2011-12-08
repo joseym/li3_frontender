@@ -26,7 +26,6 @@ Dispatcher::applyFilter('run', function($self, $params, $chain) {
 		// the HTML style helper assumes CSS file extension.
 		// change to .less and see if the less version exists (below)
 		$less_file = str_ireplace('.css', '.less', $params['request']->url);
-		
  		$stats = stat($less_file);
 		$dir = dirname($less_file);
 		
@@ -37,11 +36,12 @@ Dispatcher::applyFilter('run', function($self, $params, $chain) {
 		$cache_name = "style{$oname}_{$stats['ino']}_{$stats['mtime']}_{$stats['size']}.css";
 		
 		// Cached CSS file
-		$css_file = Libraries::get(true, 'resources') . DS . 'tmp' . DS . 'cache' . DS . 'templates' . DS . $cache_name;
-		
+		$cache_dir = Libraries::get(true, 'resources') . DS . 'tmp' . DS . 'cache' . DS . 'templates';
+		$css_file = $cache_dir . DS . $cache_name;
+
 		// LessCSSify things
 		if(file_exists($less_file)) {
-			
+
 			header('Content-Type: text/css');
 
 			// if there's an up-to-date css file, serve it
@@ -63,17 +63,33 @@ Dispatcher::applyFilter('run', function($self, $params, $chain) {
 				header('Content-Type: text/css', true, 500);
 				$output = "/* less compiler exception: {$e->getMessage()} */";
 			}
-
+			
 			// Store cache file and serve the output to the browser
 			file_put_contents($css_file, $output);
+
+			// loop thru files in cache and delete old cache file
+			if ($handle = opendir($cache_dir)) {
+
+			    while (false !== ($file = readdir($handle))) {
+			    	if(preg_match("/style{$oname}/", $file)){
+
+				        unlink($cache_dir . DS . $file);
+				        				        
+			    	}
+			    }
+						
+			    closedir($handle);
+			}
+			
 			return $output;
 
 		}
 
-	}
 		
-	return $chain->next($self, $params, $chain);
+	}
+	
+	$result = $chain->next($self, $params, $chain);
+	
+	return $result;
 
 });
-
-?>
