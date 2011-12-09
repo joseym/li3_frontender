@@ -34,24 +34,50 @@ class Html extends \lithium\template\helper\Html {
 		
 		$this->webroot = Media::webroot(true);
 		
-		// Loop thru paths passed to the helper
-		if(is_array($path)){
-			foreach((array)$path as $index => $sheet){
+		$library = Libraries::get('assets');
+		$library['config'] = (isset($library['config'])) ? $library['config'] : array();
+		
+        if(!isset($library['config']['css'])){
+			$library['config']['css'] = array(
+	            'cache_busting' => true
+	        );
+        } 
+		
+		// If cache busting is enabled		
+		if( $library['config']['css']['cache_busting'] or isset($options['cache_busting']) ){ 
 			
-				// see if its less or css
-				$ext = file_exists(Media::path("css/{$sheet}.less", "cs")) ? 'less' : 'css';
-				// add the files timestamp
-				$add_timestamp = Media::asset("css/{$sheet}.{$ext}", "cs", array('timestamp' => true));
-				
-				if($ext == 'less'){
-					// cast the less file as a css file, the filter will determine if its less
-					$add_timestamp = preg_replace(array("/\.less/"), array(".css"), $add_timestamp);
+			$bust = true;
+			
+			if(isset($options['cache_busting'])){
+				$bust = ($options['cache_busting'] === false) ? false : true;
+			}
+			
+			if($bust){
+			
+				// Loop thru paths passed to the helper
+				if(is_array($path)){
+					foreach((array)$path as $index => $sheet){
+					
+						// see if its less or css
+						$ext = file_exists(Media::path("css/{$sheet}.less", "cs")) ? 'less' : 'css';
+						// add the files timestamp
+						$add_timestamp = Media::asset("css/{$sheet}.{$ext}", "cs", array('timestamp' => true));
+						
+						if($ext == 'less'){
+							// cast the less file as a css file, the filter will determine if its less
+							$add_timestamp = preg_replace(array("/\.less/"), array(".css"), $add_timestamp);
+						}
+						
+						// store the modified path
+						$path[$index] = $add_timestamp;
+					}
 				}
 				
-				// store the modified path
-				$path[$index] = $add_timestamp;
 			}
 		}
+		
+		// We dont want to pass the "cache_busting" option to the renderer, its not a valid attribute
+		if(isset($options['cache_busting'])) unset($options['cache_busting']);
 		
 		// Call the parent
 		return parent::style($path, $options);
@@ -67,24 +93,51 @@ class Html extends \lithium\template\helper\Html {
 	 */
  	public function image($path, array $options = array()) {
  		
- 		$is_local = true;
- 		
-		$parsed_path = parse_url($path);
+		$library = Libraries::get('assets');
+		$library['config'] = (isset($library['config'])) ? $library['config'] : array();
 		
-		if(isset($parsed_path['host'])){
-			$is_local = ($parsed_path['host'] !== $_SERVER['SERVER_NAME']) ? false : true;
-		}
+        if(!isset($library['config']['css'])){
+			$library['config']['image'] = array(
+	            'cache_busting' => true
+	        );
+        } 
 		
-		if($is_local){
-		
-			$image_path = $parsed_path['path'];
-			if(!preg_match("/^\/img\//", $image_path)){
-				$image_path = "/img/" . $image_path;
+		// If cache busting is enabled		
+		if( $library['config']['image']['cache_busting'] or isset($options['cache_busting']) ){ 
+			
+			$bust = true;
+			
+			if(isset($options['cache_busting'])){
+				$bust = ($options['cache_busting'] === false) ? false : true;
 			}
 			
-			$path = Media::asset($image_path, "img", array('timestamp' => true));
+			if($bust){
+			
+		 		$is_local = true;
+		 		
+				$parsed_path = parse_url($path);
+				
+				if(isset($parsed_path['host'])){
+					$is_local = ($parsed_path['host'] !== $_SERVER['SERVER_NAME']) ? false : true;
+				}
+				
+				if($is_local){
+				
+					$image_path = $parsed_path['path'];
+					if(!preg_match("/^\/img\//", $image_path)){
+						$image_path = "/img/" . $image_path;
+					}
+					
+					$path = Media::asset($image_path, "img", array('timestamp' => true));
+					
+				}
+			
+			}
 			
 		}
+		
+		// We dont want to pass the "cache_busting" option to the renderer, its not a valid attribute
+		if(isset($options['cache_busting'])) unset($options['cache_busting']);
 		
 		return parent::image($path, $options);
 		
