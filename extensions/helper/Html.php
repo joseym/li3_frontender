@@ -56,6 +56,40 @@ class Html extends \lithium\template\helper\Html {
 		// Call the parent
 		return parent::style($path, $options);
 	}
+	
+	/**
+	 * Mimes parent image function.
+	 *
+	 * @param string $path Path to the image file, relative to the app/webroot/img/ directory.
+	 * @param array $options Array of HTML attributes.
+	 * @return string
+	 * @filter This method can be filtered.
+	 */
+ 	public function image($path, array $options = array()) {
+ 		
+ 		$is_local = true;
+ 		
+		$parsed_path = parse_url($path);
+		
+		if(isset($parsed_path['host'])){
+			$is_local = ($parsed_path['host'] !== $_SERVER['SERVER_NAME']) ? false : true;
+		}
+		
+		if($is_local){
+		
+			$image_path = $parsed_path['path'];
+			if(!preg_match("/^\/img\//", $image_path)){
+				$image_path = "/img/" . $image_path;
+			}
+			
+			$path = Media::asset($image_path, "img", array('timestamp' => true));
+			
+		}
+		
+		return parent::image($path, $options);
+		
+	}
+
 	    
 }
 ?>
