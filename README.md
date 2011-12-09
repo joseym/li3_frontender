@@ -26,25 +26,47 @@ git clone git@github.com:joseym/assets.git
 Edit your-lithium-app/bootstrap/libraries.php
 
 ```php
-Libraries::add('assets');
+Libraries::add('assets', array(
+  'config' => array(
+       'css' => array(
+            'cache_busting' => true
+       ),
+       'image' => array(
+            'cache_busting' => true
+       )
+  )
+));
 ```
+The config array is optional. Should you choose to leave it out the defaults (displayed above) will be set.
+This is where you can determine if you want cache busting automatically enabled or not.
 
 ### 3. Use Lithium like normal
 * LessCSS - create a LessCSS stylesheet in /webroot/css (main.less)
 * Link stylesheets in template
   * `<?php echo $this->html->style(array('main', 'debug', 'lithium')); ?>` - where `debug` and `lithium` are standard CSS files and `main` is a Less file
-  
+
+you can optionally enable or disable cache busting regardless of plugin settings (above) like so:
+```php
+<?php echo $this->html->style(array('main', 'debug', 'lithium'), array('cache_busting' => false)); ?>
+```
+
 ### 4. Use Image Helper like normal
 ```php
 <?php echo $this->html->image('test.jpg', array('height' => 150)); ?>
 ```
 _renders as_
-```html
+```
 <img src="/img/test.jpg?1322778444" height="150" alt="" />
 ```
-  
+you can optionally enable or disable cache busting regardless of plugin settings (above) like so:
+```php
+<?php echo $this->html->image('test.jpg', array('height' => 150), array('cache_busting' => false)); ?>
+```
 
 ## Upcoming Features
+* File Merging
+  * Linking of multiple Stylesheets with HTML style helper will merge the stylesheets into a single cache file and render them as 1 stylesheet link
+  * Linking of multiple Javascript files with HTML script helper will merge the scripts into a single cache file and render them as 1 javascript file
 * CSS/JS minification
 * CSS Tidying
 * Configuration settings for Libraries::add
