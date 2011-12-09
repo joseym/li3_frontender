@@ -5,12 +5,14 @@ Helper plugin for the PHP MVC Framework [Lithium](http://lithify.me)
 Lithium: <http://lithify.me>
 
 ## Features
-**CSS**
+__CSS__
+
 * Seamlessly compile [LessCSS](http://leafo.net/lessphp) templates (requires .less files in css directory)
   * Requires [LessPHP](http://leafo.net/lessphp) (included in this package: v0.3.0)
 * Automatically adds cache busting to styles when page is rendered
 
-**Images**
+__Images__
+
 * Converts all absolute image paths to relative paths
 * Automatically adds cache busting to all local images
 
