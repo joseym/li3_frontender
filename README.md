@@ -5,9 +5,14 @@ Helper plugin for the PHP MVC Framework [Lithium](http://lithify.me)
 Lithium: <http://lithify.me>
 
 ## Features
+**CSS**
 * Seamlessly compile [LessCSS](http://leafo.net/lessphp) templates (requires .less files in css directory)
   * Requires [LessPHP](http://leafo.net/lessphp) (included in this package: v0.3.0)
-* Automatically adds Cache Busting to styles when page is rendered
+* Automatically adds cache busting to styles when page is rendered
+
+**Images**
+* Converts all absolute image paths to relative paths
+* Automatically adds cache busting to all local images
 
 ## How to Use
 
@@ -28,6 +33,15 @@ Libraries::add('assets');
 * LessCSS - create a LessCSS stylesheet in /webroot/css (main.less)
 * Link stylesheets in template
   * `<?php echo $this->html->style(array('main', 'debug', 'lithium')); ?>` - where `debug` and `lithium` are standard CSS files and `main` is a Less file
+  
+### 4. Use Image Helper like normal
+```php
+<?php echo $this->html->image('test.jpg', array('height' => 150)); ?>
+```
+_renders as_
+```html
+<img src="/img/test.jpg?1322778444" height="150" alt="" />
+```
   
 
 ## Upcoming Features
