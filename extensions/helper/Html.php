@@ -62,6 +62,7 @@ class Html extends \lithium\template\helper\Html {
 			$library['config']['css'] = $this->default_config['css'];
         } 
 		
+		$bust = false;
 		// If cache busting is enabled		
 		if( $library['config']['css']['cache_busting'] or isset($options['cache_busting']) ){ 
 			
@@ -71,35 +72,58 @@ class Html extends \lithium\template\helper\Html {
 				$bust = ($options['cache_busting'] === false) ? false : true;
 			}
 			
-			if($bust){
-			
-				// Loop thru paths passed to the helper
-				if(is_array($path)){
-					foreach((array)$path as $index => $sheet){
-					
-						// see if its less or css
-						$ext = file_exists(Media::path("css/{$sheet}.less", "cs")) ? 'less' : 'css';
-						// add the files timestamp
-						$add_timestamp = Media::asset("css/{$sheet}.{$ext}", "cs", array('timestamp' => true));
-						
-						// Minify
-						if($ext == 'less'){
-							// cast the less file as a css file, the filter will determine if its less
-							$add_timestamp = preg_replace(array("/\.less/"), array(".css"), $add_timestamp);
-						}
-						
-						if($library['config']['css']['minify']){
-							$add_timestamp = preg_replace(array("/\.css/"), array(".min.css"), $add_timestamp);
-						}
-						
-						// store the modified path
-						$path[$index] = $add_timestamp;
-					}
-				}
-				
-			}
 		}
 		
+		if(is_array($path)){
+			foreach((array)$path as $index => $sheet){
+			
+				// see if its less or css
+				$ext = file_exists(Media::path("css/{$sheet}.less", "cs")) ? 'less' : 'css';
+				
+				// add the files timestamp
+				if($bust){
+					$sheet = Media::asset("css/{$sheet}.{$ext}", "cs", array('timestamp' => true));
+				}
+					
+				// Minify
+				if($ext == 'less'){
+					// cast the less file as a css file, the filter will determine if its less
+					$sheet = preg_replace(array("/\.less/"), array(".css"), $sheet);
+				}
+				
+				if($library['config']['css']['minify']){
+					$sheet = preg_replace(array("/\.css/"), array(".min.css"), $sheet);
+				}
+					
+				// store the modified path
+				$path[$index] = $sheet;
+			}
+		} else {
+			
+			$sheet = $path;
+			
+			// see if its less or css
+			$ext = file_exists(Media::path("css/{$sheet}.less", "cs")) ? 'less' : 'css';
+			
+			// add the files timestamp
+			if($bust){
+				$sheet = Media::asset("css/{$sheet}.{$ext}", "cs", array('timestamp' => true));
+			}
+				
+			// Minify
+			if($ext == 'less'){
+				// cast the less file as a css file, the filter will determine if its less
+				$sheet = preg_replace(array("/\.less/"), array(".css"), $sheet);
+			}
+			
+			if($library['config']['css']['minify']){
+				$sheet = preg_replace(array("/\.css/"), array(".min.css"), $sheet);
+			}
+				
+			// store the modified path
+			$path = $sheet;
+		}
+				
 		// We dont want to pass the "cache_busting" option to the renderer, its not a valid attribute
 		if(isset($options['cache_busting'])) unset($options['cache_busting']);
 		

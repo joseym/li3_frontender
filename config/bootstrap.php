@@ -50,19 +50,17 @@ Dispatcher::applyFilter('run', function($self, $params, $chain) {
 	            'minify' => true
 	        );
         } 
-		
-		$less_file = str_ireplace('.css', '.less', $params['request']->url);
-		
-		$file = file_exists($less_file) ? $less_file : preg_replace('/\.min/', '', $params['request']->url);
-		
+
 		// the HTML style helper assumes CSS file extension.
 		// change to .less and see if the less version exists (below)
-		$less_file = str_ireplace('.css', '.less', $file);
+		$less_file = preg_replace("/\.css|\.min.css/", ".less", $params['request']->url);
+
+		$file = file_exists($less_file) ? $less_file : preg_replace('/\.min/', '', $params['request']->url);		
 		
  		$stats = stat($file);
 		
 		// Prep file for cache naming
-		$oname = preg_replace(array("/^css|\.less|\.css/", "/\//"), array("", "_"), $file);
+		$oname = preg_replace(array("/^css|\.less|\.css/", "/\/|\./"), array("", "_"), $params['request']->url);
 		
 		// Build cache filename
 		$cache_name = "style{$oname}_{$stats['ino']}_{$stats['mtime']}_{$stats['size']}.css";
