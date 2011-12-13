@@ -12,6 +12,15 @@ use \lithium\storage\Cache;
 
 
 class Html extends \lithium\template\helper\Html {
+
+	/**
+	 * Name of library
+	 * In case I decide to rename it later
+	 * assigned in bootstrap
+	 * 
+	 * @var string
+	 */
+	private $libary_name = PLUGIN_NAME;
 	
 	/**
 	 * Path to media/webroot directory
@@ -19,6 +28,16 @@ class Html extends \lithium\template\helper\Html {
 	 * @var string
 	 */
 	public $webroot;
+	
+	public $default_config = array(
+		'css' => array(
+			'cache_busting' => true,
+			'minify' => false
+		),
+		'image' => array(
+			'cache_busting' => true
+		)
+	);
 
 	/**
 	 * Mimes parent style function.
@@ -29,18 +48,18 @@ class Html extends \lithium\template\helper\Html {
 	 * @return string CSS <link /> or <style /> tag, depending on the type of link.
 	 * @filter This method can be filtered.
 	 */
-	
 	public function style($path, array $options = array()) {
 		
 		$this->webroot = Media::webroot(true);
 		
-		$library = Libraries::get('assets');
+		$library = Libraries::get($this->libary_name);
+		
+		// stage configuration array (if none is set in ::add then create a blank array)
 		$library['config'] = (isset($library['config'])) ? $library['config'] : array();
 		
+		// set defaults for css config only if css isn't specified in ::add[config]
         if(!isset($library['config']['css'])){
-			$library['config']['css'] = array(
-	            'cache_busting' => true
-	        );
+			$library['config']['css'] = $this->default_config['css'];
         } 
 		
 		// If cache busting is enabled		
@@ -63,9 +82,14 @@ class Html extends \lithium\template\helper\Html {
 						// add the files timestamp
 						$add_timestamp = Media::asset("css/{$sheet}.{$ext}", "cs", array('timestamp' => true));
 						
+						// Minify
 						if($ext == 'less'){
 							// cast the less file as a css file, the filter will determine if its less
 							$add_timestamp = preg_replace(array("/\.less/"), array(".css"), $add_timestamp);
+						}
+						
+						if($library['config']['css']['minify']){
+							$add_timestamp = preg_replace(array("/\.css/"), array(".min.css"), $add_timestamp);
 						}
 						
 						// store the modified path
@@ -92,14 +116,13 @@ class Html extends \lithium\template\helper\Html {
 	 * @filter This method can be filtered.
 	 */
  	public function image($path, array $options = array()) {
- 		
-		$library = Libraries::get('assets');
+ 	
+		$library = Libraries::get($this->libary_name);
 		$library['config'] = (isset($library['config'])) ? $library['config'] : array();
 		
-        if(!isset($library['config']['css'])){
-			$library['config']['image'] = array(
-	            'cache_busting' => true
-	        );
+		// set defaults for css config only if css isn't specified in ::add[config]
+        if(!isset($library['config']['image'])){
+			$library['config']['image'] = $this->default_config['image'];
         } 
 		
 		// If cache busting is enabled		
