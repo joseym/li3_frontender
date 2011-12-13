@@ -92,10 +92,7 @@ Dispatcher::applyFilter('run', function($self, $params, $chain) {
 	
 	}
 	
-	
-	
 	$result = $chain->next($self, $params, $chain);
-	
 	
 	return $result;
 

@@ -10,6 +10,8 @@ __CSS__
 * Seamlessly compile [LessCSS](http://leafo.net/lessphp) templates (requires .less files in css directory)
   * Requires [LessPHP](http://leafo.net/lessphp) (included in this package: v0.3.0)
 * Automatically adds cache busting to styles when page is rendered
+* Minify CSS files
+  * Strips out spaces, line breaks and comments
 
 __Images__
 
@@ -31,7 +33,8 @@ Edit your-lithium-app/bootstrap/libraries.php
 Libraries::add('assets', array(
   'config' => array(
        'css' => array(
-            'cache_busting' => true
+            'cache_busting' => true,
+            'minify' => true
        ),
        'image' => array(
             'cache_busting' => true
@@ -46,6 +49,8 @@ This is where you can determine if you want cache busting automatically enabled 
 * LessCSS - create a LessCSS stylesheet in /webroot/css (main.less)
 * Link stylesheets in template
   * `<?php echo $this->html->style(array('main', 'debug', 'lithium')); ?>` - where `debug` and `lithium` are standard CSS files and `main` is a Less file
+  * If `minify` => `true` is set in `::add` configuration (example above) then all stylesheets are minified
+  * __Note__: link your sheets like normal and they will render as `stylesheet.min.css`.
 
 you can optionally enable or disable cache busting regardless of plugin settings (above) like so:
 ```php
