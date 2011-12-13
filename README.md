@@ -61,7 +61,9 @@ you can optionally enable or disable cache busting regardless of plugin settings
 ```php
 <?php echo $this->html->image('test.jpg', array('height' => 150)); ?>
 ```
+
 _renders as_
+
 ```
 <img src="/img/test.jpg?1322778444" height="150" alt="" />
 ```
