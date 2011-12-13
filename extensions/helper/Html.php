@@ -74,31 +74,7 @@ class Html extends \lithium\template\helper\Html {
 			
 		}
 		
-		if(is_array($path)){
-			foreach((array)$path as $index => $sheet){
-			
-				// see if its less or css
-				$ext = file_exists(Media::path("css/{$sheet}.less", "cs")) ? 'less' : 'css';
-				
-				// add the files timestamp
-				if($bust){
-					$sheet = Media::asset("css/{$sheet}.{$ext}", "cs", array('timestamp' => true));
-				}
-					
-				// Minify
-				if($ext == 'less'){
-					// cast the less file as a css file, the filter will determine if its less
-					$sheet = preg_replace(array("/\.less/"), array(".css"), $sheet);
-				}
-				
-				if($library['config']['css']['minify']){
-					$sheet = preg_replace(array("/\.css/"), array(".min.css"), $sheet);
-				}
-					
-				// store the modified path
-				$path[$index] = $sheet;
-			}
-		} else {
+		if(!is_array($path)){
 			
 			$sheet = $path;
 			
