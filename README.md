@@ -76,8 +76,6 @@ you can optionally enable or disable cache busting regardless of plugin settings
 * File Merging
   * Linking of multiple Stylesheets with HTML style helper will merge the stylesheets into a single cache file and render them as 1 stylesheet link
   * Linking of multiple Javascript files with HTML script helper will merge the scripts into a single cache file and render them as 1 javascript file
-* CSS/JS minification
-* CSS Tidying
-* Configuration settings for Libraries::add
+* JS minification
 
 
