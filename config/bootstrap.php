@@ -19,6 +19,7 @@ if (!defined('DS')) define('DS', DIRECTORY_SEPARATOR);
  */
 if(!defined('PLUGIN_NAME')) define('PLUGIN_NAME', 'assets');
 if(!defined('CACHE_DIR')) define('CACHE_DIR', Libraries::get(true, 'resources') . DS . 'tmp' . DS . 'cache' . DS . 'templates');
+if(!defined('LIB_PATH')) define('LIB_PATH', dirname(dirname(__DIR__)) . DS);
 
 require LITHIUM_APP_PATH . DS . 'libraries' . DS . PLUGIN_NAME . DS . 'lessphp' . DS . 'lessc.inc.php';
 require LITHIUM_APP_PATH . DS . 'libraries' . DS . PLUGIN_NAME . DS . 'css_minify.php';
@@ -33,9 +34,19 @@ Dispatcher::applyFilter('run', function($self, $params, $chain) {
 
 	// check to see if its a css file
 	if(strstr($params['request']->url, '.css')) {
-
+				
 		header('Content-Type: text/css');
 
+		$path_array = explode('/', $params['request']->url);
+		
+		if($path_array[0] == 'css'){
+			array_splice($path_array, 0, 0, array("webroot"));
+			$path =  LITHIUM_APP_PATH . DS . implode($path_array, '/');
+		} else {
+			array_splice($path_array, 1, 0, array("webroot"));
+			$path =  LIB_PATH . implode($path_array, '/');
+		}
+				
 		$is_min = preg_match("/\.min/", $params['request']->url);
 		
 		$library = Libraries::get(PLUGIN_NAME);
@@ -50,12 +61,17 @@ Dispatcher::applyFilter('run', function($self, $params, $chain) {
 	            'minify' => true
 	        );
         } 
-
+				
 		// the HTML style helper assumes CSS file extension.
 		// change to .less and see if the less version exists (below)
-		$less_file = preg_replace("/\.css|\.min.css/", ".less", $params['request']->url);
-
-		$file = file_exists($less_file) ? $less_file : preg_replace('/\.min/', '', $params['request']->url);		
+		$less_file = preg_replace("/\.css|\.min.css/", ".less", $path);
+		
+		$file = file_exists($less_file) ? $less_file : preg_replace('/\.min/', '', $path);		
+				
+		if(!file_exists($file)){
+			header('Content-Type: text/css', true, 404);
+			return;
+		}
 		
  		$stats = stat($file);
 		
@@ -89,7 +105,7 @@ Dispatcher::applyFilter('run', function($self, $params, $chain) {
 		}
 		
 		return storeCache($output, $css_file);
-	
+		
 	}
 	
 	$result = $chain->next($self, $params, $chain);
@@ -135,10 +151,14 @@ function storeCache($contents, $file){
 }
 
 function parseLess($less_file, $output_file){
-
-	// if there's an up-to-date css file, serve it
-	if(file_exists($output_file) && filemtime($output_file) >= filemtime($less_file)) {
-		return file_get_contents($output_file);
+	
+	$library = Libraries::get(PLUGIN_NAME);
+	
+	if($library['config']['environment'] == strtolower('production')){
+		// if there's an up-to-date css file, serve it
+		if(file_exists($output_file) && filemtime($output_file) >= filemtime($less_file)) {
+			return file_get_contents($output_file);
+		}		
 	}
 	
 	// Try to generate new cache file

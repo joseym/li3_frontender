@@ -78,20 +78,25 @@ class Html extends \lithium\template\helper\Html {
 			
 			$sheet = $path;
 			
-			// see if its less or css
-			$ext = file_exists(Media::path("css/{$sheet}.less", "cs")) ? 'less' : 'css';
+			$checkroot = (substr($sheet, 0, 1) == '/') ? false : true;
 			
+			$stylesheet = ($checkroot) ? "css/{$sheet}" : "{$sheet}";
+			
+			// see if its less or css
+			$ext = file_exists(Media::path("{$stylesheet}", "cs")) ? 'less' : 'css';
+						
 			// add the files timestamp
 			if($bust){
-				$sheet = Media::asset("css/{$sheet}.{$ext}", "cs", array('timestamp' => true));
+				$sheet = Media::asset("{$stylesheet}.{$ext}", "cs", array('timestamp' => true));
 			}
-				
-			// Minify
+			
+			
 			if($ext == 'less'){
 				// cast the less file as a css file, the filter will determine if its less
 				$sheet = preg_replace(array("/\.less/"), array(".css"), $sheet);
 			}
 			
+			// Minify
 			if($library['config']['css']['minify']){
 				$sheet = preg_replace(array("/\.css/"), array(".min.css"), $sheet);
 			}
@@ -115,6 +120,7 @@ class Html extends \lithium\template\helper\Html {
 	 * @return string
 	 * @filter This method can be filtered.
 	 */
+/*
  	public function image($path, array $options = array()) {
  	
 		$library = Libraries::get($this->libary_name);
@@ -165,6 +171,7 @@ class Html extends \lithium\template\helper\Html {
 		return parent::image($path, $options);
 		
 	}
+*/
 
 	    
 }
