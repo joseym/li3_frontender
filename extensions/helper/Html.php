@@ -63,6 +63,7 @@ class Html extends \lithium\template\helper\Html {
         } 
 		
 		$bust = false;
+
 		// If cache busting is enabled		
 		if( $library['config']['css']['cache_busting'] or isset($options['cache_busting']) ){ 
 			
@@ -115,7 +116,7 @@ class Html extends \lithium\template\helper\Html {
 	/**
 	 * Mimes parent image function.
 	 *
-	 * @param string $path Path to the image file, relative to the app/webroot/img/ directory.
+	 * @param string $path Path to the image file, relative to the app/webroot/assets/img/ directory.
 	 * @param array $options Array of HTML attributes.
 	 * @return string
 	 * @filter This method can be filtered.
@@ -154,7 +155,7 @@ class Html extends \lithium\template\helper\Html {
 				
 					$image_path = $parsed_path['path'];
 					if(!preg_match("/^\/img\//", $image_path)){
-						$image_path = "/img/" . $image_path;
+						$image_path = "/assets/img/" . $image_path;
 					}
 					
 					$path = Media::asset($image_path, "img", array('timestamp' => true));

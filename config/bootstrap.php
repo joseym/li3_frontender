@@ -17,7 +17,7 @@ if (!defined('DS')) define('DS', DIRECTORY_SEPARATOR);
  * 
  * @constant string
  */
-if(!defined('PLUGIN_NAME')) define('PLUGIN_NAME', 'assets');
+if(!defined('PLUGIN_NAME')) define('PLUGIN_NAME', 'li3_frontender');
 if(!defined('CACHE_DIR')) define('CACHE_DIR', Libraries::get(true, 'resources') . DS . 'tmp' . DS . 'cache' . DS . 'templates');
 if(!defined('LIB_PATH')) define('LIB_PATH', dirname(dirname(__DIR__)) . DS);
 
@@ -39,18 +39,26 @@ Dispatcher::applyFilter('run', function($self, $params, $chain) {
 
 		$path_array = explode('/', $params['request']->url);
 		
-		if($path_array[0] == 'css'){
+		/**
+		 * Check for `/css` or `/assets` and append to default webroot
+		 * otherwise assume its a plugin
+		 * 
+		 * Need a more efficient check for `assets` incase the user
+		 * uses another assets directory name aside from default
+		 * 
+		 */
+		if($path_array[0] == 'css' OR $path_array[0] == 'assets'){
 			array_splice($path_array, 0, 0, array("webroot"));
 			$path =  LITHIUM_APP_PATH . DS . implode($path_array, '/');
 		} else {
 			array_splice($path_array, 1, 0, array("webroot"));
 			$path =  LIB_PATH . implode($path_array, '/');
 		}
-				
+
 		$is_min = preg_match("/\.min/", $params['request']->url);
 		
 		$library = Libraries::get(PLUGIN_NAME);
-		
+
 		// stage configuration array (if none is set in ::add then create a blank array)
 		$library['config'] = (isset($library['config'])) ? $library['config'] : array();
 		
@@ -67,7 +75,7 @@ Dispatcher::applyFilter('run', function($self, $params, $chain) {
 		$less_file = preg_replace("/\.css|\.min.css/", ".less", $path);
 		
 		$file = file_exists($less_file) ? $less_file : preg_replace('/\.min/', '', $path);		
-				
+						
 		if(!file_exists($file)){
 			header('Content-Type: text/css', true, 404);
 			return;
