@@ -1,6 +1,6 @@
 <?php
 
-namespace assets\extensions\helper;
+namespace li3_frontender\extensions\helper;
 use \lithium\core\Libraries;
 use \lithium\net\http\Media;
 use \lithium\storage\Cache;
