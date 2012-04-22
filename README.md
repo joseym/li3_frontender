@@ -1,6 +1,8 @@
 # Assets Plugin for [li3](http://lithify.me)
 Helper plugin for the PHP MVC Framework [Lithium](http://lithify.me)
 
+> This project was my first adventure into writing a lithium plugin. While it was a great learning experiance there are a lot of things I would do differently; therefore I am hitting this project again from a [different branch](https://github.com/joseym/li3_frontender/tree/assetic), using a powerful PHP library called [Assetic](https://github.com/kriswallsmith/assetic#readme).
+
 ## Requirements
 Lithium: <http://lithify.me>
 
