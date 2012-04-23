@@ -1,3 +1,6 @@
 [submodule "libraries/assetic"]
 	path = libraries/assetic
 	url = https://github.com/kriswallsmith/assetic.git
+[submodule "libraries/lessphp"]
+	path = libraries/lessphp
+	url = https://github.com/leafo/lessphp.git
