@@ -26,11 +26,13 @@ This is a branch off of my [original assets plugin ("li3_frontender")](https://g
 
 3. Pull in the the project dependencies.
 
-> Currently dependancies include [Assetic](https://github.com/kriswallsmith/assetic) and [LessPHP](https://github.com/leafo/lessphp).
+> Currently dependancies include [Assetic](https://github.com/kriswallsmith/assetic), [Symfony/Process](https://github.com/symfony/Process) and [LessPHP](https://github.com/leafo/lessphp).
 
 	$ cd app/libraries/li3_frontender
 	$ git submodule init
 	$ git submodule update
+
+This project also comes packaged with [YUI Compressor](http://yuilibrary.com/download/yuicompressor/), which Assetic uses for compression of JS and CSS assets.
 
 ***
 
