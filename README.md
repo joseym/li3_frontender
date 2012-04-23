@@ -14,7 +14,7 @@ This is a branch off of my [original assets plugin ("li3_frontender")](https://g
 
 ***
 
-> Instructions will be added below as they as I build it out
+> Instructions will be added below as I build out plugin features
 
 ***
 
