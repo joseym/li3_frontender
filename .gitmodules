@@ -4,3 +4,6 @@
 [submodule "libraries/lessphp"]
 	path = libraries/lessphp
 	url = https://github.com/leafo/lessphp.git
+[submodule "libraries/Symfony/Component/Process"]
+	path = libraries/Symfony/Component/Process
+	url = https://github.com/symfony/Process.git
