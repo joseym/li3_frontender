@@ -22,15 +22,15 @@ This is a branch off of my [original assets plugin ("li3_frontender")](https://g
 1. Clone/Download the plugin into your app's ``libraries`` directory.
 2. Tell your app to load the plugin by adding the following to your app's ``config/bootstrap/libraries.php``:
 
-    Libraries::add('li3_frontender');
+	Libraries::add('li3_frontender');
 
 3. Pull in the the project dependencies.
 
 > Currently dependancies include [Assetic](https://github.com/kriswallsmith/assetic) and [LessPHP](https://github.com/leafo/lessphp).
 
-		$ cd app/libraries/li3_frontender
-		$ git submodule init
-		$ git submodule update
+	$ cd app/libraries/li3_frontender
+	$ git submodule init
+	$ git submodule update
 
 ***
 
