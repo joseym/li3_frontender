@@ -19,6 +19,8 @@ defined('FRONTENDER_VENDORS') OR define('FRONTENDER_VENDORS', FRONTENDER_PATH . 
 defined('FRONTENDER_LIBS') OR define('FRONTENDER_LIBS', FRONTENDER_PATH . "/libraries");
 defined('FRONTENDER_SRC') OR define('FRONTENDER_SRC', FRONTENDER_LIBS . "/assetic/src/Assetic");
 
+defined('CACHE_DIR') OR define('CACHE_DIR', Libraries::get(true, 'resources') . "/tmp/cache/templates");
+
 /**
  * Load in project dependancies which include 
  * LessPHP, Assetic and Symfony Process component
@@ -34,7 +36,14 @@ Dispatcher::applyFilter('run', function($self, $params, $chain) {
 
 		$key = preg_replace("/^(css\/)/", 'templates/', $params['request']->url);
 
-		return Cache::read('default', $key);
+		// Return cached stylesheet
+		if($cache = Cache::read('default', $key)){
+			return $cache;
+		// throw 404
+		} else {
+			header('Content-Type: text/css', true, 404);
+			return;
+		}
 
 	}
 

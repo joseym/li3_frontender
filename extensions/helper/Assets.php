@@ -93,15 +93,56 @@ class Assets extends \lithium\template\Helper {
 
 		} 
 
-		$filename = String::hash($filename, array('type' => 'sha1')) . "_{$stats['size']}_{$stats['modified']}.css";
+		// Hashed filename without stats appended.
+		$_rawFilename = String::hash($filename, array('type' => 'sha1'));
 
-		// this will echo CSS compiled by LESS and compressed by YUI
-		// rebuild the cache
+		$filename = "{$_rawFilename}_{$stats['size']}_{$stats['modified']}.css";
+
+		// If Cache doesn't exist then we recache
+		// Recache removes old caches and adds the new
+		// ---
+		// If you change a file in the styles added then a recache is made due
+		// to the fact that the file stats changed
 		if(!$cached = Cache::read('default', "templates/{$filename}")){
-			Cache::write('default', "templates/{$filename}", $this->styles->dump(), '+1 minute');
+
+			$this->recache($filename, $this->styles->dump());			
+
 		}
 
-		echo $this->_context->helper('html')->style("{$filename}?{$stats['modified']}");
+		echo $this->_context->helper('html')->style("{$filename}");
+
+	}
+
+	private function recache($filename, $content, $options = array()){
+
+		$defaults = array(
+			'length' => '+1 year'
+		);
+
+		$options += $defaults;
+
+		$name_sections = explode('_', $filename);
+
+		$like_files = $name_sections[0];
+
+		// loop thru cache and delete old cache file
+		if ($handle = opendir(CACHE_DIR)) {
+
+			while (false !== ($oldfile = readdir($handle))) {
+			
+				if(preg_match("/^{$like_files}/", $oldfile)){
+
+					Cache::delete('default', "templates/{$oldfile}");
+
+				}
+
+			}
+
+			closedir($handle);
+
+		}
+
+		Cache::write('default', "templates/{$filename}", $this->styles->dump(), $options['length']);
 
 	}
 
