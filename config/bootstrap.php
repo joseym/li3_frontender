@@ -5,6 +5,7 @@
 use lithium\core\Libraries;
 use lithium\storage\Cache;
 use lithium\net\http\Media;
+use lithium\action\Dispatcher;
 
 // Plugin Location
 defined('FRONTENDER_PATH') OR define('FRONTENDER_PATH', dirname(__DIR__));
@@ -19,25 +20,27 @@ defined('FRONTENDER_LIBS') OR define('FRONTENDER_LIBS', FRONTENDER_PATH . "/libr
 defined('FRONTENDER_SRC') OR define('FRONTENDER_SRC', FRONTENDER_LIBS . "/assetic/src/Assetic");
 
 /**
- * Symfony dependancies for Assetic
+ * Load in project dependancies which include 
+ * LessPHP, Assetic and Symfony Process component
  */
-Libraries::add("Symfony", array(
-	"path" => FRONTENDER_LIBS . "/symfony",
-	"bootstrap" => false,
-));
+require __DIR__ . '/libraries.php';
 
-/**
- * Less PHP Compiler class
- */
-Libraries::add("lessc", array(
-	"path" => FRONTENDER_LIBS . "/lessphp",
-	"bootstrap" => "lessc.inc.php",
-));
+Dispatcher::applyFilter('run', function($self, $params, $chain) {
 
-/**
- * Assetic Library
- */
-Libraries::add("Assetic", array(
-	"path" => FRONTENDER_SRC,
-	"bootstrap" => false,
-));
+	// filter over css files
+	if(strstr($params['request']->url, '.css')) {
+		
+		header('Content-Type: text/css');
+
+		$key = preg_replace("/^(css\/)/", 'templates/', $params['request']->url);
+
+		return Cache::read('default', $key);
+
+	}
+
+	$result = $chain->next($self, $params, $chain);
+
+	return $result;
+
+
+});

@@ -2,19 +2,20 @@
 
 namespace li3_frontender\extensions\helper;
 
+use \lithium\core\Environment;
 use \lithium\core\Libraries;
-use \lithium\net\http\Media;
 use \lithium\storage\Cache;
-use \lithium\core\Object;
+use \lithium\util\String;
 
 // Assetic Classes
-use Assetic\Asset\AssetCollection;
 use Assetic\AssetManager;
+use Assetic\Asset\AssetCollection;
 use Assetic\Asset\FileAsset;
 use Assetic\Asset\GlobAsset;
+
+// Assetic Filters
 use Assetic\Filter\LessphpFilter;
 use Assetic\Filter\Yui;
-use Assetic\Cache\FilesystemCache;
 
 class Assets extends \lithium\template\Helper {
 
@@ -27,6 +28,8 @@ class Assets extends \lithium\template\Helper {
 	public function _init(){
 
 		parent::_init();
+		// print_r(Cache::config());
+		// print_r(Environment::get() == 'development');
 
 		$this->styles =  new AssetCollection();
 		$this->scripts = new AssetCollection();
@@ -44,7 +47,7 @@ class Assets extends \lithium\template\Helper {
 		$this->_config['assets_root'] = (substr($this->_config['assets_root'], -1) == "/") 
 			? substr($this->_config['assets_root'], 0, -1) : $this->_config['assets_root'];
 
-		$this->_paths['styles'] = $this->_config['assets_root'] . "/css/";
+		$this->_paths['styles'] =  $this->_config['assets_root'] . "/css/";
 		$this->_paths['scripts'] = $this->_config['assets_root'] . "/js/";
 
 		if($this->_config['compress']){
@@ -58,34 +61,47 @@ class Assets extends \lithium\template\Helper {
 
 		$defaults = array('type' => 'stylesheet', 'inline' => true);
 
+		$filename = "";
+
+		$stats = array('modified' => 0, 'size' => 0);
+
 		foreach($stylesheets as $sheet){
+
+			$path = $this->_paths['styles'] . $sheet . ".css";
+
+			$filters = array();
 
 			// its a less file
 			if(preg_match("/(.less)$/is", $sheet)){
-				$this->styles->add( new FileAsset( $this->_paths['styles'] . $sheet, array( new LessphpFilter() ) ) );
-				continue;
+
+				$path = $this->_paths['styles'] . $sheet;
+
+				$filters = array( new LessphpFilter() );
+
 			}
 
-			$this->styles->add( new FileAsset( $this->_paths['styles'] . $sheet . ".css" ) );
+			$filename .= $path;
+
+			$_stat = stat($path);
+
+			$stats['modified'] += $_stat['mtime'];
+			$stats['size'] += $_stat['size'];
+
+			$this->styles->add( 
+				new FileAsset( $path , $filters )
+			);
 
 		} 
 
+		$filename = String::hash($filename, array('type' => 'sha1')) . "_{$stats['size']}_{$stats['modified']}.css";
+
 		// this will echo CSS compiled by LESS and compressed by YUI
-		echo $this->styles->dump();
-		die();
+		// rebuild the cache
+		if(!$cached = Cache::read('default', "templates/{$filename}")){
+			Cache::write('default', "templates/{$filename}", $this->styles->dump(), '+1 minute');
+		}
 
-	}
-
-	private function setCollection(array $options = array(), $type){
-		// if($type !== 'styles' OR $type !== 'scripts') return;
-
-		$this->styles = new AssetCollection(array($options));
-
-	}
-
-	public function getCollection($type){
-
-		return $this->styles;
+		echo $this->_context->helper('html')->style("{$filename}?{$stats['modified']}");
 
 	}
 
