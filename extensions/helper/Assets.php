@@ -165,12 +165,10 @@ class Assets extends \lithium\template\Helper {
 		foreach($this->scripts as $leaf){
 
 			$filename = "{$leaf->getSourceRoot()}/{$leaf->getSourcePath()}";
-			// $_rawFilename = String::hash($filename, array('type' => 'sha1'));
-			echo $leaf->dump();
-			die();
+			$_rawFilename = String::hash($filename, array('type' => 'sha1'));
 			// $_rawFilename = preg_replace("/(.css|.less)$/is", replacement, subject);
 
-			echo $this->buildStyleLink($_rawFilename, $leaf, array('modified' => 10, 'size' => 10));
+			echo $this->buildScriptLink($_rawFilename, $leaf, array('modified' => 10, 'size' => 10));
 
 		}
 
@@ -198,7 +196,32 @@ class Assets extends \lithium\template\Helper {
 		}
 
 		// pass single stylesheet link
-		return $this->_context->helper('html')->style("{$filename}");
+		return $this->_context->helper('html')->style("{$filename}") . "\n\t";
+
+	}
+
+	/**
+	 * Check cache and spits out the style link
+	 * @param  string $filename name of the cache file
+	 * @param  object $content  Assetic style object
+	 * @param  array $stats    file stats
+	 * @return string           lithium link helper
+	 */
+	private function buildScriptLink($filename, $content, $stats){
+
+		$filename = "{$filename}_{$stats['size']}_{$stats['modified']}.js";
+
+		// If Cache doesn't exist then we recache
+		// Recache removes old caches and adds the new
+		// ---
+		// If you change a file in the styles added then a recache is made due
+		// to the fact that the file stats changed
+		if(!$cached = Cache::read('default', "js/{$filename}")){
+			$this->setCache($filename, $content->dump(), array('location' => 'js'));			
+		}
+
+		// pass single stylesheet link
+		return $this->_context->helper('html')->script("{$filename}") . "\n\t";
 
 	}
 

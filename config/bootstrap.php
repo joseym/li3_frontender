@@ -29,7 +29,13 @@ require __DIR__ . '/libraries.php';
 Dispatcher::applyFilter('run', function($self, $params, $chain) {
 
 	// filter over css files
-	if(strstr($params['request']->url, '.css')) { return handleCSS($params['request']); }
+	if(strstr($params['request']->url, '.css')) { 
+		return readCache($params['request'], 'text/css', 'Stylesheet does not exist'); 
+	}
+
+	if(strstr($params['request']->url, '.js')) { 
+		return readCache($params['request'], 'text/javascript', 'Script does not exist'); 
+	}
 
 	$result = $chain->next($self, $params, $chain);
 
@@ -39,16 +45,15 @@ Dispatcher::applyFilter('run', function($self, $params, $chain) {
 });
 
 /**
- * Handle CSS Requests
- * Returns CSS from Cache if exists, otherwise returns a 404 message
- * @param  [type] $request [description]
- * @return [type]          [description]
+ * Read cache files for assets
+ * Returns CSS/Js from Cache if exists, otherwise returns a 404 message
+ * @param  object $request
+ * @return string          contents of cache file
  */
-function handleCSS($request){
+function readCache($request, $type, $errorMessage){
 
-	header('Content-Type: text/css');
+	header("Content-Type: {$type}");
 
-	// $key = preg_replace("/^(css\/)/", 'css/', $request->url);
 	$key = $request->url;
 
 	// Return cached stylesheet
@@ -57,8 +62,8 @@ function handleCSS($request){
 
 	// throw 404
 	} else {
-		header('Content-Type: text/css', true, 404);
-		$content = "404: Stylesheet does not exist";
+		header("Content-Type: {$type}", true, 404);
+		$content = "404: {$errorMessage}";
 		echo $content;
 	}
 
