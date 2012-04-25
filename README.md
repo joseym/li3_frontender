@@ -84,7 +84,7 @@ This option, and several others are overwriteable from the `Libraries::add()` co
 
 ### Configuration options
 
-<table>
+<table markdown="1">
 	<tr>
 		<th>Name</th>
 		<th>Options</th>
@@ -93,7 +93,7 @@ This option, and several others are overwriteable from the `Libraries::add()` co
 	</tr>
 	<tr>
 		<td><strong>compress</strong></td>
-		<td><code>bool</code> (true | false)</td>
+		<td><code>bool</code> (`true`|false)</td>
 		<td><code>false<strong></td>
 		<td>Force assets to be compressed, if production this defaults to <code>true</code>, otherwise <code>false</code>.</td>
 	</tr>
