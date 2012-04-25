@@ -78,13 +78,17 @@ This option, and several others are overwriteable from the `Libraries::add()` co
 		'compress' => false,
 		'production' => true,
 		'assets_root' => LITHIUM_APP_PATH . "/webroot/assets",
+		'locations' => array(
+			'coffee' => '/usr/bin/libs/coffee',
+			'node' => '/usr/bin/libs/node'
+		)
 	));
 ?>
 ~~~
 
 ### Configuration options
 
-<table markdown="1">
+<table>
 	<tr>
 		<th>Name</th>
 		<th>Options</th>
@@ -93,13 +97,13 @@ This option, and several others are overwriteable from the `Libraries::add()` co
 	</tr>
 	<tr>
 		<td><strong>compress</strong></td>
-		<td><code>bool</code> (`true`|false)</td>
+		<td><code>bool</code> (true/false)</td>
 		<td><code>false<strong></td>
 		<td>Force assets to be compressed, if production this defaults to <code>true</code>, otherwise <code>false</code>.</td>
 	</tr>
 	<tr>
 		<td><strong>production</strong></td>
-		<td><code>bool</code> (true | false)</td>
+		<td><code>bool</code> (true/false)</td>
 		<td>attempts to read from Lithium Environments class</td>
 		<td>Force assets to render in production or not, if this isn't set then the plugin will attempt to determine this automagically.</td>
 	</tr>
@@ -108,6 +112,12 @@ This option, and several others are overwriteable from the `Libraries::add()` co
 		<td>Pass in a path to your assets</td>
 		<td><code>LITHIUM_APP_PATH . "/webroot"</code></td>
 		<td>Where should the plugin look for your files, defaults to the standard <code>webroot</code> directory. The example above would look for CSS files in <code>/webroot/assets/css/</code></td>
+	</tr>
+	<tr>
+		<td><strong>locations</strong></td>
+		<td>array: <code>coffee</code> - <code>path to coffeescript on server</code><br /><code>node</code> - <code>path to node on server</code></td>
+		<td><code>coffee</code> - <code>/usr/bin/coffee</code><br /><code>node</code> - <code>/usr/bin/node</code></td>
+		<td>These are the locations of <code>node</code> and <code>coffeescript</code> on your server, defaults should suffice.</td>
 	</tr>
 </table>
 

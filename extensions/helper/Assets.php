@@ -40,7 +40,11 @@ class Assets extends \lithium\template\Helper {
 		$defaults = array(
 			'compress' => false,
 			'assets_root' => LITHIUM_APP_PATH . "/webroot",
-			'production' => (Environment::get() == 'production')
+			'production' => (Environment::get() == 'production'),
+			'locations' => array(
+				'node' => '/usr/bin/node',
+				'coffee' => '/usr/bin/coffee'
+			)
 		);
 
 		$this->_config += $defaults;
@@ -151,7 +155,7 @@ class Assets extends \lithium\template\Helper {
 
 				$path = $this->_paths['scripts'] . $script;
 
-				$filters = array( new CoffeeScriptFilter() );
+				$filters = array( new CoffeeScriptFilter($this->_config['locations']['coffee'], $this->_config['locations']['node']) );
 
 			}
 
