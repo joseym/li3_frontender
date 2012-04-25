@@ -4,7 +4,6 @@
  */
 use lithium\core\Libraries;
 use lithium\storage\Cache;
-use lithium\net\http\Media;
 use lithium\action\Dispatcher;
 
 // Plugin Location
@@ -19,7 +18,7 @@ defined('FRONTENDER_VENDORS') OR define('FRONTENDER_VENDORS', FRONTENDER_PATH . 
 defined('FRONTENDER_LIBS') OR define('FRONTENDER_LIBS', FRONTENDER_PATH . "/libraries");
 defined('FRONTENDER_SRC') OR define('FRONTENDER_SRC', FRONTENDER_LIBS . "/assetic/src/Assetic");
 
-defined('CACHE_DIR') OR define('CACHE_DIR', Libraries::get(true, 'resources') . "/tmp/cache/templates");
+defined('CACHE_DIR') OR define('CACHE_DIR', Libraries::get(true, 'resources') . "/tmp/cache");
 
 /**
  * Load in project dependancies which include 
@@ -30,22 +29,7 @@ require __DIR__ . '/libraries.php';
 Dispatcher::applyFilter('run', function($self, $params, $chain) {
 
 	// filter over css files
-	if(strstr($params['request']->url, '.css')) {
-		
-		header('Content-Type: text/css');
-
-		$key = preg_replace("/^(css\/)/", 'templates/', $params['request']->url);
-
-		// Return cached stylesheet
-		if($cache = Cache::read('default', $key)){
-			return $cache;
-		// throw 404
-		} else {
-			header('Content-Type: text/css', true, 404);
-			return;
-		}
-
-	}
+	if(strstr($params['request']->url, '.css')) { return handleCSS($params['request']); }
 
 	$result = $chain->next($self, $params, $chain);
 
@@ -53,3 +37,29 @@ Dispatcher::applyFilter('run', function($self, $params, $chain) {
 
 
 });
+
+/**
+ * Handle CSS Requests
+ * Returns CSS from Cache if exists, otherwise returns a 404 message
+ * @param  [type] $request [description]
+ * @return [type]          [description]
+ */
+function handleCSS($request){
+
+	header('Content-Type: text/css');
+
+	// $key = preg_replace("/^(css\/)/", 'css/', $request->url);
+	$key = $request->url;
+
+	// Return cached stylesheet
+	if($cache = Cache::read('default', $key)){
+		echo $cache;
+
+	// throw 404
+	} else {
+		header('Content-Type: text/css', true, 404);
+		$content = "404: Stylesheet does not exist";
+		echo $content;
+	}
+
+};
