@@ -77,7 +77,7 @@ class Assets extends \lithium\template\Helper {
 			'path' => $this->_paths['styles']
 		);
 
-		$this->_buildLinks($stylesheets, $options);
+		$this->_runAssets($stylesheets, $options);
 
 	}
 
@@ -93,7 +93,7 @@ class Assets extends \lithium\template\Helper {
 			'path' => $this->_paths['scripts']
 		);
 
-		$this->_buildLinks($scripts, $options);
+		$this->_runAssets($scripts, $options);
 
 	}
 
@@ -104,7 +104,7 @@ class Assets extends \lithium\template\Helper {
 	 * @param  array  $options [description]
 	 * @return [type]          [description]
 	 */
-	private function _buildLinks(array $files = array(), array $options = array()) {
+	private function _runAssets(array $files = array(), array $options = array()) {
 
 		$filename = ""; // will store concatenated filename
 
