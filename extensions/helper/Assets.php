@@ -21,16 +21,14 @@ use Assetic\Filter\Yui;
 class Assets extends \lithium\template\Helper {
 
 	protected $_config;
+	protected $_paths;
+	protected $_production;
 	protected $styles;
 	protected $scripts;
-	protected $assetsPath;
-	protected $_paths;
 
 	public function _init(){
 
 		parent::_init();
-		// print_r(Cache::config());
-		// print_r(Environment::get() == 'development');
 
 		$this->styles =  new AssetCollection();
 		$this->scripts = new AssetCollection();
@@ -49,6 +47,8 @@ class Assets extends \lithium\template\Helper {
 
 		$this->_config += $defaults;
 
+		$this->_production = $this->_config['production'];
+
 		// remove extra slash if it was included in the library config
 		$this->_config['assets_root'] = (substr($this->_config['assets_root'], -1) == "/") 
 			? substr($this->_config['assets_root'], 0, -1) : $this->_config['assets_root'];
@@ -56,8 +56,7 @@ class Assets extends \lithium\template\Helper {
 		$this->_paths['styles'] =  $this->_config['assets_root'] . "/css/";
 		$this->_paths['scripts'] = $this->_config['assets_root'] . "/js/";
 
-		if($this->_config['compress'] OR 
-			$this->_config['production']){
+		if($this->_config['compress'] OR $this->_production){
 			$this->styles->ensureFilter( new Yui\CssCompressorFilter( YUI_COMPRESSOR ) );
 			$this->scripts->ensureFilter( new Yui\JsCompressorFilter( YUI_COMPRESSOR ) );
 		}
@@ -72,30 +71,63 @@ class Assets extends \lithium\template\Helper {
 	 */
 	public function style($stylesheets) {
 
-		$defaults = array('type' => 'stylesheet', 'inline' => true);
+		$options = array(
+			'type' => 'css',
+			'filters' => array( new LessphpFilter() ),
+			'path' => $this->_paths['styles']
+		);
+
+		$this->_buildLinks($stylesheets, $options);
+
+	}
+
+	/**
+	 * This is pretty much identical to the style method above
+	 * I plan to consolidate these two.
+	 */
+	public function script($scripts) {
+
+		$options = array(
+			'type' => 'js',
+			'filters' => array( new CoffeeScriptFilter($this->_config['locations']['coffee'], $this->_config['locations']['node']) ),
+			'path' => $this->_paths['scripts']
+		);
+
+		$this->_buildLinks($scripts, $options);
+
+	}
+
+	/**
+	 * Method used to determine if an asset needs to be cached or timestamped.
+	 * Makes appropriate calls based on this.
+	 * @param  array  $files   [description]
+	 * @param  array  $options [description]
+	 * @return [type]          [description]
+	 */
+	private function _buildLinks(array $files = array(), array $options = array()) {
 
 		$filename = ""; // will store concatenated filename
 
 		$stats = array('modified' => 0, 'size' => 0); // stores merged file stats
 
+		// request type
+		$type = ($options['type'] == 'css') ? 'styles' : 'scripts';
+
 		// loop over the sheets that were passed and run them thru Assetic
-		foreach($stylesheets as $sheet){
-
-			$path = $this->_paths['styles'] . $sheet . ".css";
-
-			$filters = array();
-
-			// its a less file
-			if(preg_match("/(.less)$/is", $sheet)){
-
-				$path = $this->_paths['styles'] . $sheet;
-
-				$filters = array( new LessphpFilter() );
-
+		foreach($files as $file){
+			
+			$_filename = $file;
+			$path = $options['path'];
+			
+			// build filename if not a less file
+			if($isSpecial = $this->specialExt($file)){
+				$path .= $file;
+			} else {
+				$path .= "{$file}.{$options['type']}";
+				$_filename = "{$file}.{$options['type']}";
 			}
 
-			$filename .= $path;
-
+			// ensure file exists, if so set stats
 			if(file_exists($path)){
 
 				$_stat = stat($path);
@@ -105,127 +137,95 @@ class Assets extends \lithium\template\Helper {
 				$stats[$path]['modified'] = $_stat['mtime'];
 				$stats[$path]['size'] = $_stat['size'];
 
-				$this->styles->add( 
-					new FileAsset( $path , $filters )
-				);
-
 			} else {
 
-				throw new RuntimeException("The stylesheet '{$path}' does not exist");
+				throw new RuntimeException("The {$options['type']} file '{$path}' does not exist");
 
 			}
-
-		} 
-
-		// If in production merge files and server up a single stylesheet
-		if($this->_config['production']){
-
-			// Hashed filename without stats appended.
-			$_rawFilename = String::hash($filename, array('type' => 'sha1'));
-			echo $this->buildStyleLink($_rawFilename, $this->styles, $stats);
-
-		} else {
-
-			foreach($this->styles as $leaf){
-
-				$filename = "{$leaf->getSourceRoot()}/{$leaf->getSourcePath()}";
-				$_rawFilename = String::hash($filename, array('type' => 'sha1'));
-				// die($filename);
-				// $_rawFilename = preg_replace("/(.css|.less)$/is", replacement, subject);
-				$stat = $stats[$filename];
-
-				echo $this->buildStyleLink($_rawFilename, $leaf, $stat);
-
-			}
-
-		}
-
-	}
-
-	public function script($scripts) {
-
-		foreach($scripts as $script){
-
-			$path = $this->_paths['scripts'] . $script . ".js";
 
 			$filters = array();
 
-			// its a less file
-			if(preg_match("/(.coffee)$/is", $script)){
+			// its a less or coffee file
+			if($isSpecial){
 
-				$path = $this->_paths['scripts'] . $script;
+				$path = $options['path'] . $file;
 
-				$filters = array( new CoffeeScriptFilter($this->_config['locations']['coffee'], $this->_config['locations']['node']) );
+				$filters +=  $options['filters'];
+
+			} else {
+
+				// If we're not in production and we're not compressingthen we 
+				// dont need to cache static css assets
+				if(!$this->_production AND !$this->_config['compress']){
+
+					$method = substr($type, 0, -1);
+					echo $this->_context->helper('html')->{$method}("{$_filename}?{$stats[$path]['modified']}") . "\n\t";
+					continue;
+
+				}
 
 			}
 
-			$this->scripts->add( 
+			$filename .= $path;
+
+			// add asset to assetic collection
+			$this->{$type}->add( 
 				new FileAsset( $path , $filters )
 			);
 
 		} 
 
 		// If in production merge files and server up a single stylesheet
-		foreach($this->scripts as $leaf){
+		if($this->_production){
 
-			$filename = "{$leaf->getSourceRoot()}/{$leaf->getSourcePath()}";
+			// Hashed filename without stats appended.
 			$_rawFilename = String::hash($filename, array('type' => 'sha1'));
-			// $_rawFilename = preg_replace("/(.css|.less)$/is", replacement, subject);
+			echo $this->buildHelper($_rawFilename, $this->{$type}, array('type' => $options['type'], 'stats' => $stats));
 
-			echo $this->buildScriptLink($_rawFilename, $leaf, array('modified' => 10, 'size' => 10));
+		} else {
+
+			// not production so lets serve up individual files (better debugging)
+			foreach($this->{$type} as $leaf){
+
+				$filename = "{$leaf->getSourceRoot()}/{$leaf->getSourcePath()}";
+				$_rawFilename = String::hash($filename, array('type' => 'sha1'));
+				$stat = $stats[$filename];
+
+				echo $this->buildHelper($_rawFilename, $leaf, array('type' => $options['type'], 'stats' => $stats));
+
+			}
 
 		}
-
 
 	}
 
 	/**
-	 * Check cache and spits out the style link
+	 * Check cache and spits out the style/script link
 	 * @param  string $filename name of the cache file
 	 * @param  object $content  Assetic style object
-	 * @param  array $stats    file stats
+	 * @param  array $options    file stats and helper type
 	 * @return string           lithium link helper
 	 */
-	private function buildStyleLink($filename, $content, $stats){
+	private function buildHelper($filename, $content, array $options = array()){
 
-		$filename = "{$filename}_{$stats['size']}_{$stats['modified']}.css";
+		$filename = "{$filename}_{$options['stats']['size']}_{$options['stats']['modified']}.{$options['type']}";
 
 		// If Cache doesn't exist then we recache
 		// Recache removes old caches and adds the new
 		// ---
 		// If you change a file in the styles added then a recache is made due
 		// to the fact that the file stats changed
-		if(!$cached = Cache::read('default', "css/{$filename}")){
-			$this->setCache($filename, $content->dump(), array('location' => 'css'));			
+		if(!$cached = Cache::read('default', "{$options['type']}/{$filename}")){
+			$this->setCache($filename, $content->dump(), array('location' => $options['type']));			
 		}
 
 		// pass single stylesheet link
-		return $this->_context->helper('html')->style("{$filename}") . "\n\t";
-
-	}
-
-	/**
-	 * Check cache and spits out the style link
-	 * @param  string $filename name of the cache file
-	 * @param  object $content  Assetic style object
-	 * @param  array $stats    file stats
-	 * @return string           lithium link helper
-	 */
-	private function buildScriptLink($filename, $content, $stats){
-
-		$filename = "{$filename}_{$stats['size']}_{$stats['modified']}.js";
-
-		// If Cache doesn't exist then we recache
-		// Recache removes old caches and adds the new
-		// ---
-		// If you change a file in the styles added then a recache is made due
-		// to the fact that the file stats changed
-		if(!$cached = Cache::read('default', "js/{$filename}")){
-			$this->setCache($filename, $content->dump(), array('location' => 'js'));			
+		switch($options['type']){
+			case 'css':
+				return $this->_context->helper('html')->style("{$filename}") . "\n\t";
+			case 'js':
+				return $this->_context->helper('html')->script("{$filename}") . "\n\t";
 		}
-
-		// pass single stylesheet link
-		return $this->_context->helper('html')->script("{$filename}") . "\n\t";
 
 	}
 
@@ -271,6 +271,17 @@ class Assets extends \lithium\template\Helper {
 
 		Cache::write('default', "{$options['location']}/{$filename}", $content, $options['length']);
 
+	}
+
+	private function specialExt($filename){
+
+		if(preg_match("/(.less|.coffee)$/is", $filename, $matches)){
+			$ext = $matches[0];
+		} else {
+			$ext = false;
+		}
+
+		return $ext;
 	}
 
 }
