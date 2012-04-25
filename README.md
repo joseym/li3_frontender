@@ -10,13 +10,8 @@ This Plugin now uses the awesome [Assetic](https://github.com/kriswallsmith/asse
 
 ## Original Project
 
-This is a branch off of my [original assets plugin ("li3_frontender")](https://github.com/joseym/li3_frontender)
-
-***
-
-> Instructions will be added below as I build out plugin features
-
-***
+> This is a branch off of my [original assets plugin ("li3_frontender")](https://github.com/joseym/li3_frontender/tree/legacy)(legacy branch)
+> If you would like to use the old version, you can clone it from there.
 
 ## Installation
 1. Clone/Download the plugin into your app's ``libraries`` directory.
@@ -121,10 +116,5 @@ This option, and several others are overwriteable from the `Libraries::add()` co
 	</tr>
 </table>
 
-***
-
-## That's all she wrote so far
-
-Assetic features as well as some of my own will be added thru the use of a helper.
-
-Stay tuned as this project should progress fairly quickly.
+## Collaborate
+As always, I welcome your collaboration to make things "even more betterer", so fork and contribute if you feel the need.
