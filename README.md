@@ -94,7 +94,7 @@ This option, and several others are overwriteable from the `Libraries::add()` co
 	<tr>
 		<td><strong>compress</strong></td>
 		<td><code>bool</code> (true | false)</td>
-		<td>`false`</td>
+		<td><code>false<strong></td>
 		<td>Force assets to be compressed, if production this defaults to <code>true</code>, otherwise <code>false</code>.</td>
 	</tr>
 	<tr>
