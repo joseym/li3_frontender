@@ -92,21 +92,21 @@ This option, and several others are overwriteable from the `Libraries::add()` co
 		<th>Description</th>
 	</tr>
 	<tr>
-		<td>__compress__</td>
+		<td><strong>compress</strong></td>
 		<td><code>bool</code> (true | false)</td>
 		<td>`false`</td>
 		<td>Force assets to be compressed, if production this defaults to <code>true</code>, otherwise <code>false</code>.</td>
 	</tr>
 	<tr>
-		<td>__production__</td>
+		<td><strong>production</strong></td>
 		<td><code>bool</code> (true | false)</td>
 		<td>attempts to read from Lithium Environments class</td>
 		<td>Force assets to render in production or not, if this isn't set then the plugin will attempt to determine this automagically.</td>
 	</tr>
 	<tr>
-		<td>__assets_root__</td>
+		<td><strong>assets_root</strong></td>
 		<td>Pass in a path to your assets</td>
-		<td><code>LITHIUM_APP_PATH . "/webroot"<code></td>
+		<td><code>LITHIUM_APP_PATH . "/webroot"</code></td>
 		<td>Where should the plugin look for your files, defaults to the standard <code>webroot</code> directory. The example above would look for CSS files in <code>/webroot/assets/css/</code></td>
 	</tr>
 </table>
