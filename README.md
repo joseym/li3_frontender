@@ -61,7 +61,7 @@ You assign page styles much like you would with the out-of-the-box Html helper
 Like the style helper, the script helper also takes an array.
 
 ~~~ php
-<?php $this->assets->script((array('plugins', 'common', 'niftythings.coffee')); ?>
+<?php $this->assets->script(array('plugins', 'common', 'niftythings.coffee'); ?>
 ~~~
 
 > Just like the `.less` file in the last example, if you pass a `.coffee` file to the script helper the plugin will compile it and serve up the proper, compiled, js. All other files are assumed `.js`. Feel free to add `.js` to these extensions if you would like.
@@ -92,22 +92,22 @@ This option, and several others are overwriteable from the `Libraries::add()` co
 		<th>Description</th>
 	</tr>
 	<tr>
-		<td>compress</td>
-		<td>`bool` (true | false)</td>
+		<td>__compress__</td>
+		<td><code>bool</code> (true | false)</td>
 		<td>`false`</td>
-		<td>Force assets to be compressed, if production this defaults to `true`, otherwise `false`.</td>
+		<td>Force assets to be compressed, if production this defaults to <code>true</code>, otherwise <code>false</code>.</td>
 	</tr>
 	<tr>
-		<td>production</td>
-		<td>`bool` (true | false)</td>
+		<td>__production__</td>
+		<td><code>bool</code> (true | false)</td>
 		<td>attempts to read from Lithium Environments class</td>
 		<td>Force assets to render in production or not, if this isn't set then the plugin will attempt to determine this automagically.</td>
 	</tr>
 	<tr>
-		<td>assets_root</td>
+		<td>__assets_root__</td>
 		<td>Pass in a path to your assets</td>
-		<td>`LITHIUM_APP_PATH . "/webroot"`</td>
-		<td>Where should the plugin look for your files, defaults to the standard `webroot` directory. The example above would look for CSS files in `/webroot/assets/css/`</td>
+		<td><code>LITHIUM_APP_PATH . "/webroot"<code></td>
+		<td>Where should the plugin look for your files, defaults to the standard <code>webroot</code> directory. The example above would look for CSS files in <code>/webroot/assets/css/</code></td>
 	</tr>
 </table>
 
