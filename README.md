@@ -1,87 +1,130 @@
 # Assets Plugin for [li3](http://lithify.me)
-Helper plugin for the PHP MVC Framework [Lithium](http://lithify.me)
 
 ***
 
-> This project was my first adventure into writing a lithium plugin. While it was a great learning experiance there are a lot of things I would do differently; therefore I am hitting this project again from a [different branch](https://github.com/joseym/li3_frontender/tree/assetic), using a powerful PHP library called [Assetic](https://github.com/kriswallsmith/assetic#readme).
+> This is my second draft of an Assets plugin for Lithium PHP. The first was a great learning experiance but I've decided there are a number of things I would change.
 
 ***
 
-## Requirements
-Lithium: <http://lithify.me>
+This Plugin now uses the awesome [Assetic](https://github.com/kriswallsmith/assetic) library to power many of it's features.
 
-## Features
-__CSS__
+## Original Project
 
-* Seamlessly compile [LessCSS](http://leafo.net/lessphp) templates (requires .less files in css directory)
-  * Requires [LessPHP](http://leafo.net/lessphp) (included in this package: v0.3.0)
-* Automatically adds cache busting to styles when page is rendered
-* Minify CSS files
-  * Strips out spaces, line breaks and comments
+This is a branch off of my [original assets plugin ("li3_frontender")](https://github.com/joseym/li3_frontender)
 
-__Images__
+***
 
-* Converts all absolute image paths to relative paths
-* Automatically adds cache busting to all local images
+> Instructions will be added below as I build out plugin features
 
-## How to Use
+***
 
-### 1. Get the Plugin
-```shell
-cd your-lithium-app/libraries
-git clone git@github.com:joseym/assets.git
-```
+## Installation
+1. Clone/Download the plugin into your app's ``libraries`` directory.
+2. Tell your app to load the plugin by adding the following to your app's ``config/bootstrap/libraries.php``:
 
-### 2. Add plugin to project
-Edit your-lithium-app/bootstrap/libraries.php
+	Libraries::add('li3_frontender');
 
-```php
-Libraries::add('assets', array(
-  'config' => array(
-       'css' => array(
-            'cache_busting' => true,
-            'minify' => true
-       ),
-       'image' => array(
-            'cache_busting' => true
-       )
-  )
-));
-```
-The config array is optional. Should you choose to leave it out the defaults (displayed above) will be set.
-This is where you can determine if you want cache busting automatically enabled or not.
+	> Configuration options are available, I'll highlight those later.
 
-### 3. Use Lithium like normal
-* LessCSS - create a LessCSS stylesheet in /webroot/css (main.less)
-* Link stylesheets in template
-  * `<?php echo $this->html->style(array('main', 'debug', 'lithium')); ?>` - where `debug` and `lithium` are standard CSS files and `main` is a Less file
-  * If `minify` => `true` is set in `::add` configuration (example above) then all stylesheets are minified
-  * __Note__: link your sheets like normal and they will render as `stylesheet.min.css`.
+3. Pull in the the project dependencies.
 
-you can optionally enable or disable cache busting regardless of plugin settings (above) like so:
-```php
-<?php echo $this->html->style(array('main', 'debug', 'lithium'), array('cache_busting' => false)); ?>
-```
+> Currently dependancies include [Assetic](https://github.com/kriswallsmith/assetic#readme), [Symfony/Process](https://github.com/symfony/Process#readme) and [LessPHP](https://github.com/leafo/lessphp#readme).
 
-### 4. Use Image Helper like normal
-```php
-<?php echo $this->html->image('test.jpg', array('height' => 150)); ?>
-```
+	$ cd app/libraries/li3_frontender
+	$ git submodule init
+	$ git submodule update
 
-_renders as_
+> If you use coffee script you will have to ensure [Node.JS](http://nodejs.org/) and [CoffeeScript](http://http://coffeescript.org) are running on your server.
 
-```
-<img src="/img/test.jpg?1322778444" height="150" alt="" />
-```
-you can optionally enable or disable cache busting regardless of plugin settings (above) like so:
-```php
-<?php echo $this->html->image('test.jpg', array('height' => 150), array('cache_busting' => false)); ?>
-```
+This project also comes packaged with [YUI Compressor](http://yuilibrary.com/download/yuicompressor/), which Assetic uses for compression of JS and CSS assets.
 
-## Upcoming Features
-* File Merging
-  * Linking of multiple Stylesheets with HTML style helper will merge the stylesheets into a single cache file and render them as 1 stylesheet link
-  * Linking of multiple Javascript files with HTML script helper will merge the scripts into a single cache file and render them as 1 javascript file
-* JS minification
+## Usage
+Currently this project supports the following frontend tools:
 
+1. LessCSS compiling
+2. CoffeeScript compiling
+3. Instant cache busting thru unique filenames
+4. CSS/JS Compression
 
+The project comes bundled with it's own [Helper](https://github.com/joseym/li3_frontender/blob/assetic/extensions/helper/Assets.php), here's how use use it.
+
+### Linking Stylesheets
+You assign page styles much like you would with the out-of-the-box Html helper
+
+~~~ php
+<?php $this->assets->style(array('main', 'menu', 'magic.less')); ?>
+~~~
+
+> You may have noticed the `.less` file in there. Adding the file extension is required for `.less` files to ensure they are compiled, you may include the `.css` extension for standard stylesheets or just leave it off.
+
+### Linking Scripts
+Like the style helper, the script helper also takes an array.
+
+~~~ php
+<?php $this->assets->script(array('plugins', 'common', 'niftythings.coffee'); ?>
+~~~
+
+> Just like the `.less` file in the last example, if you pass a `.coffee` file to the script helper the plugin will compile it and serve up the proper, compiled, js. All other files are assumed `.js`. Feel free to add `.js` to these extensions if you would like.
+
+## Production vs Development
+
+> The backend of this plugin will do its best to determine if you're in a dev environment or production, if you're in a production environment this plugin will automatically compress your stylesheets and scripts and merge them into a single file and serve __that__ file up to your layout or view.
+
+This option, and several others are overwriteable from the `Libraries::add()` configuration. Here's an example
+
+~~~ php
+<?php
+	Libraries::add('li3_frontender', array(
+		'compress' => false,
+		'production' => true,
+		'assets_root' => LITHIUM_APP_PATH . "/webroot/assets",
+		'locations' => array(
+			'coffee' => '/usr/bin/libs/coffee',
+			'node' => '/usr/bin/libs/node'
+		)
+	));
+?>
+~~~
+
+### Configuration options
+
+<table>
+	<tr>
+		<th>Name</th>
+		<th>Options</th>
+		<th>Defaults</th>
+		<th>Description</th>
+	</tr>
+	<tr>
+		<td><strong>compress</strong></td>
+		<td><code>bool</code> (true/false)</td>
+		<td><code>false<strong></td>
+		<td>Force assets to be compressed, if production this defaults to <code>true</code>, otherwise <code>false</code>.</td>
+	</tr>
+	<tr>
+		<td><strong>production</strong></td>
+		<td><code>bool</code> (true/false)</td>
+		<td>attempts to read from Lithium Environments class</td>
+		<td>Force assets to render in production or not, if this isn't set then the plugin will attempt to determine this automagically.</td>
+	</tr>
+	<tr>
+		<td><strong>assets_root</strong></td>
+		<td>Pass in a path to your assets</td>
+		<td><code>LITHIUM_APP_PATH . "/webroot"</code></td>
+		<td>Where should the plugin look for your files, defaults to the standard <code>webroot</code> directory. The example above would look for CSS files in <code>/webroot/assets/css/</code></td>
+	</tr>
+	<tr>
+		<td><strong>locations</strong></td>
+		<td>array: <code>coffee</code> - <em>path to coffeescript on server</em><br /><code>node</code> - <em>path to node on server</em></td>
+		<td><code>coffee</code> - <code>/usr/bin/coffee</code><br /><code>node</code> - <code>/usr/bin/node</code></td>
+		<td>These are the locations of <code>node</code> and <code>coffeescript</code> on your server, defaults should suffice.</td>
+	</tr>
+</table>
+
+***
+
+## That's all she wrote so far
+
+Assetic features as well as some of my own will be added thru the use of a helper.
+
+Stay tuned as this project should progress fairly quickly.
