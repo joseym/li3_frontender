@@ -115,7 +115,7 @@ This option, and several others are overwriteable from the `Libraries::add()` co
 	</tr>
 	<tr>
 		<td><strong>locations</strong></td>
-		<td>array: <code>coffee</code> - <code>path to coffeescript on server</code><br /><code>node</code> - <code>path to node on server</code></td>
+		<td>array: <code>coffee</code> - <em>path to coffeescript on server</em><br /><code>node</code> - <em>path to node on server</em></td>
 		<td><code>coffee</code> - <code>/usr/bin/coffee</code><br /><code>node</code> - <code>/usr/bin/node</code></td>
 		<td>These are the locations of <code>node</code> and <code>coffeescript</code> on your server, defaults should suffice.</td>
 	</tr>
