@@ -120,7 +120,8 @@ class Assets extends \lithium\template\Helper {
 			$path = $options['path'];
 			
 			// build filename if not a less file
-			if($isSpecial = $this->specialExt($file)){
+			if(($isSpecial = $this->specialExt($file)) 
+				OR (preg_match("/(.css|.js)$/is", $file))){
 				$path .= $file;
 			} else {
 				$path .= "{$file}.{$options['type']}";
