@@ -13,25 +13,24 @@
 		}
 	],
 
-	"repositories": [
-		{
-			"type": "package",
+	"repositories": {
+		"leafo": {
 			"package": {
-				"name": "leafo/lessphp",
+				"name": "lessphp",
 				"version": "master",
 				"source": {
-					"url": "https://github.com/leafo/lessphp.git",
+					"url": "git://github.com/leafo/lessphp.git",
 					"type": "git",
 					"reference": "master"
 				}
 			}
 		}
-	],
+	},
 
 	"require": {
 		"php": ">=5.3",
 		"joseym/li3_installer": "master",
-		"leafo/lessphp": "master",
+		"lessphp": "master",
 		"kriswallsmith/assetic": "dev-master" 
 	}
 
