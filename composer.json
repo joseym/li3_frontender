@@ -34,7 +34,7 @@
 	"require": {
 		"php": ">=5.3",
 		"joseym/li3_installer": "master",
-		"leafo/lessphp": "v0.3.3",
+		"leafo/lessphp": "master",
 		"kriswallsmith/assetic": "dev-master" 
 	}
 
