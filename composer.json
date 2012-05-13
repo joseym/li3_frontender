@@ -18,14 +18,11 @@
 			"type": "package",
 			"package": {
 				"name": "leafo/lessphp",
-				"version": "0.3.3",
+				"version": "master",
 				"source": {
 					"url": "https://github.com/leafo/lessphp.git",
 					"type": "git",
-					"reference": "v0.3.3"
-				},
-				"autoload": {
-					"classmap": [ "./" ]
+					"reference": "master"
 				}
 			}
 		}
