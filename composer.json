@@ -29,8 +29,8 @@
 
 	"require": {
 		"php": ">=5.3",
-		"joseym/li3_installer": "master",
 		"lessphp": "master",
+		"joseym/li3_installer": "master",
 		"kriswallsmith/assetic": "dev-master" 
 	}
 
