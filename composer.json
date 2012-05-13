@@ -2,7 +2,7 @@
 	"name": "joseym/li3_frontender",
 	"type": "li3-libraries",
 	"description": "Lithium PHP asset extension",
-	"keywords": ["styles", "assetic", "lithium", "li3", "scripts"],
+	"keywords": ["styles", "assets", "compression", "js", "lithium", "li3"],
 	"homepage": "https://github.com/joseym/li3_frontender/blob/master/README.md",
 	"license": "GNU General Public License",
 	"authors": [
