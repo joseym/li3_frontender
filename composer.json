@@ -1,0 +1,22 @@
+{
+	"name": "joseym/li3_frontender",
+	"type": "li3-libraries",
+	"description": "Lithium PHP asset extension",
+	"keywords": ["styles", "assetic", "lithium", "li3", "scripts"],
+	"homepage": "https://github.com/joseym/li3_frontender/blob/master/README.md",
+	"license": "GNU General Public License",
+	"authors": [
+		{
+			"name": "Josey Morton",
+			"email": "me@joseymorton.com",
+			"homepage": "https://github.com/joseym"
+		}
+	],
+
+	"require": {
+		"php": ">=5.3",
+		"joseym/li3_installer": "master",
+		"kriswallsmith/assetic": "dev-master" 
+	}
+
+}
