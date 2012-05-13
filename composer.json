@@ -29,6 +29,7 @@
 
 	"require": {
 		"php": ">=5.3",
+		"leafo/lessphp": "master",
 		"joseym/li3_installer": "master",
 		"kriswallsmith/assetic": "dev-master" 
 	}
