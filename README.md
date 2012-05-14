@@ -53,11 +53,13 @@ Run `php composer.phar install` (or `php composer.phar update`) and, aside from 
 	$ git submodule init
 	$ git submodule update
 
+
+## Usage
+
 > If you use coffee script you will have to ensure [Node.JS](http://nodejs.org/) and [CoffeeScript](http://http://coffeescript.org) are running on your server.
 
 This project also comes packaged with [YUI Compressor](http://yuilibrary.com/download/yuicompressor/), which Assetic uses for compression of JS and CSS assets.
 
-## Usage
 Currently this project supports the following frontend tools:
 
 1. LessCSS compiling
