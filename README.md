@@ -150,7 +150,7 @@ This option, and several others are overwriteable from the `Libraries::add()` co
 	</tr>
 	<tr>
 		<td><strong>source</strong></td>
-		<td>string: <code>composer</code><br /><code>submodules</code></td>
+		<td>string: <code>composer</code><br /><code>submodule</code></td>
 		<td><code>composer</code></td>
 		<td>This determines where the library will pull dependency libraries, composer uses vendor paths in `libraries/_source` whereas submodule loads librarys within this plugin `libraries/li3_frontender/libraries</td>
 	</tr>
