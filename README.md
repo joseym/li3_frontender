@@ -20,7 +20,7 @@ There are several ways to grab and use this project:
 __Best Option (default)__
 
 > Other install options require a configuration parameter be set in `Libraries::add()`
-> More on that later.
+> [More on that later](https://github.com/joseym/li3_frontender#configuration-options).
 
 Modify your projects `composer.json` file
 
@@ -41,6 +41,9 @@ Run `php composer.phar install` (or `php composer.phar update`) and, aside from 
 
 ### Load via Submodule
 __More manual, bleh. Seriously, Composer is awesome__
+
+> This option requires that you tell the plugin you are not using `composer`.
+> [See library option (`source`)](https://github.com/joseym/li3_frontender#configuration-options)
 
 1. Clone/Download the plugin into your app's ``libraries`` directory.
 2. Tell your app to load the plugin by adding the following to your app's ``config/bootstrap/libraries.php``:
