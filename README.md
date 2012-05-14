@@ -40,6 +40,7 @@ Run `php composer.phar install` (or `php composer.phar update`) and, aside from 
 > I will do my best to keep it up to date with the primary project.
 
 ### Load via Submodule
+__More manual, bleh. Seriously, Composer is awesome__
 
 1. Clone/Download the plugin into your app's ``libraries`` directory.
 2. Tell your app to load the plugin by adding the following to your app's ``config/bootstrap/libraries.php``:
