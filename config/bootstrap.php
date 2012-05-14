@@ -6,6 +6,11 @@ use lithium\core\Libraries;
 use lithium\storage\Cache;
 use lithium\action\Dispatcher;
 
+/**
+ * get library options, assign defaults
+ */
+$options =  Libraries::get('li3_frontender') + array('source' => 'composer');
+
 // Plugin Location
 defined('FRONTENDER_PATH') OR define('FRONTENDER_PATH', dirname(__DIR__));
 
