@@ -14,12 +14,36 @@ This Plugin now uses the awesome [Assetic](https://github.com/kriswallsmith/asse
 > If you would like to use the old version, you can clone it from there.
 
 ## Installation
+There are several ways to grab and use this project:
+
+### Use Composer
+__Best Option (default)__
+
+> Other install options require a configuration parameter be set in `Libraries::add()`
+> More on that later.
+
+Modify your projects `composer.json` file
+
+~~~ json
+{
+    "require": {
+    	...
+        "joseym/li3_frontender": "master"
+        ...
+    }
+}
+~~~
+
+Run `php composer.phar install` (or `php composer.phar update`) and you should be good to go.
+
+### Load via Submodule
+
 1. Clone/Download the plugin into your app's ``libraries`` directory.
 2. Tell your app to load the plugin by adding the following to your app's ``config/bootstrap/libraries.php``:
 
 	Libraries::add('li3_frontender');
 
-	> Configuration options are available, I'll highlight those later.
+	> Configuration options are available, standby
 
 3. Pull in the the project dependencies.
 
@@ -76,7 +100,8 @@ This option, and several others are overwriteable from the `Libraries::add()` co
 		'locations' => array(
 			'coffee' => '/usr/bin/libs/coffee',
 			'node' => '/usr/bin/libs/node'
-		)
+		),
+		'source' => 'submodule'
 	));
 ?>
 ~~~
@@ -113,6 +138,12 @@ This option, and several others are overwriteable from the `Libraries::add()` co
 		<td>array: <code>coffee</code> - <em>path to coffeescript on server</em><br /><code>node</code> - <em>path to node on server</em></td>
 		<td><code>coffee</code> - <code>/usr/bin/coffee</code><br /><code>node</code> - <code>/usr/bin/node</code></td>
 		<td>These are the locations of <code>node</code> and <code>coffeescript</code> on your server, defaults should suffice.</td>
+	</tr>
+	<tr>
+		<td><strong>source</strong></td>
+		<td>string: <code>composer</code><br />string: <code>submodules</code></td>
+		<td><code>composer</code></td>
+		<td>This determines where the library will pull dependency libraries, composer uses vendor paths in `libraries/_source` whereas submodule loads librarys withing this plugin `libraries/li3_frontender/libraries</td>
 	</tr>
 </table>
 
