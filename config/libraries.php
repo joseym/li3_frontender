@@ -13,7 +13,7 @@ if($options['source'] !== 'composer'){
 	$_assetic_path = FRONTENDER_SRC;
 // Composer vendor/package repos
 } else {
-	$_symfony_path = LITHIUM_APP_PATH . "/libraries/_source/symfony";
+	$_symfony_path = LITHIUM_APP_PATH . "/libraries/_source/symfony/process/Symfony";
 	$_lessc_path = LITHIUM_APP_PATH . "/libraries/_source/joseym/lessphp";
 	$_assetic_path = LITHIUM_APP_PATH . "/libraries/_source/kriswallsmith/assetic/src/Assetic";
 }
