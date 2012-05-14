@@ -34,7 +34,7 @@ Modify your projects `composer.json` file
 }
 ~~~
 
-Run `php composer.phar install` (or `php composer.phar update`) and you should be good to go.
+Run `php composer.phar install` (or `php composer.phar update`) and, aside from adding it to your Libraries, you should be good to go.
 
 ### Load via Submodule
 
