@@ -36,6 +36,9 @@ Modify your projects `composer.json` file
 
 Run `php composer.phar install` (or `php composer.phar update`) and, aside from adding it to your Libraries, you should be good to go.
 
+> __Notice:__ LessPHP does not currently provide a composer package, therefore I have branched the project and have submitted my own package until such time as [Leafo decides to adopt composer](https://github.com/leafo/lessphp/issues/216).
+> I will do my best to keep it up to date with the primary project.
+
 ### Load via Submodule
 
 1. Clone/Download the plugin into your app's ``libraries`` directory.
@@ -143,9 +146,9 @@ This option, and several others are overwriteable from the `Libraries::add()` co
 	</tr>
 	<tr>
 		<td><strong>source</strong></td>
-		<td>string: <code>composer</code><br />string: <code>submodules</code></td>
+		<td>string: <code>composer</code><br /><code>submodules</code></td>
 		<td><code>composer</code></td>
-		<td>This determines where the library will pull dependency libraries, composer uses vendor paths in `libraries/_source` whereas submodule loads librarys withing this plugin `libraries/li3_frontender/libraries</td>
+		<td>This determines where the library will pull dependency libraries, composer uses vendor paths in `libraries/_source` whereas submodule loads librarys within this plugin `libraries/li3_frontender/libraries</td>
 	</tr>
 </table>
 
