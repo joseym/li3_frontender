@@ -34,11 +34,11 @@ require __DIR__ . '/libraries.php';
 Dispatcher::applyFilter('run', function($self, $params, $chain) {
 
 	// filter over css files
-	if(strstr($params['request']->url, '.css')) { 
+	if(preg_match("/.css$/", $params['request']->url)) { 
 		return readCache($params['request'], 'text/css', 'Stylesheet does not exist'); 
 	}
 
-	if(strstr($params['request']->url, '.js')) { 
+	if(preg_match("/.js$/", $params['request']->url)) { 
 		return readCache($params['request'], 'text/javascript', 'Script does not exist'); 
 	}
 
