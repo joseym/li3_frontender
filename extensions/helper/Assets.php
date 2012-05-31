@@ -190,9 +190,9 @@ class Assets extends \lithium\template\Helper {
 
 				$filename = "{$leaf->getSourceRoot()}/{$leaf->getSourcePath()}";
 				$_rawFilename = String::hash($filename, array('type' => 'sha1'));
-				$stat = $stats[$filename];
+				$stat = isset($stats[$filename]) ? $stats[$filename] : false;
 
-				echo $this->buildHelper($_rawFilename, $leaf, array('type' => $options['type'], 'stats' => $stats));
+				if ($stat) echo $this->buildHelper($_rawFilename, $leaf, array('type' => $options['type'], 'stats' => $stat));
 
 			}
 
@@ -209,8 +209,10 @@ class Assets extends \lithium\template\Helper {
 	 */
 	private function buildHelper($filename, $content, array $options = array()){
 
+		// print_r($options);
+
 		$filename = "{$filename}_{$options['stats']['size']}_{$options['stats']['modified']}.{$options['type']}";
-		//alskdfjalskdfja;lskdjfals;dkjf
+
 		// If Cache doesn't exist then we recache
 		// Recache removes old caches and adds the new
 		// ---
@@ -238,6 +240,11 @@ class Assets extends \lithium\template\Helper {
 	 */
 	private function setCache($filename, $content, $options = array()){
 
+		// Create css cache dir if it doesnt exist.
+		if (!is_dir($cache_location = CACHE_DIR . "/{$options['location']}")) {
+			mkdir($cache_location, 0755, true);
+		}
+
 		$defaults = array(
 			'length' => '+1 year',
 			'location' => 'templates'
@@ -249,9 +256,6 @@ class Assets extends \lithium\template\Helper {
 
 		$like_files = $name_sections[0];
 
-		if (!is_dir($cache_location = CACHE_DIR . "/{$options['location']}")) {
-			mkdir($cache_location, 0755, true);
-		}
 
 		// loop thru cache and delete old cache file
 		if ($handle = opendir($cache_location)) {
