@@ -210,7 +210,7 @@ class Assets extends \lithium\template\Helper {
 	private function buildHelper($filename, $content, array $options = array()){
 
 		$filename = "{$filename}_{$options['stats']['size']}_{$options['stats']['modified']}.{$options['type']}";
-
+		//alskdfjalskdfja;lskdjfals;dkjf
 		// If Cache doesn't exist then we recache
 		// Recache removes old caches and adds the new
 		// ---
