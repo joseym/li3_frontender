@@ -8,7 +8,7 @@ use lithium\core\Libraries;
 
 // Submodule Repos
 if($options['source'] !== 'composer'){
-	$_symfony_path = FRONTENDER_LIBS . "/symfony";
+	$_symfony_path = FRONTENDER_LIBS . "/Symfony";
 	$_lessc_path = FRONTENDER_LIBS . "/lessphp";
 	$_assetic_path = FRONTENDER_SRC;
 // Composer vendor/package repos
