@@ -31,13 +31,13 @@ defined('CACHE_DIR') OR define('CACHE_DIR', Libraries::get(true, 'resources') . 
  */
 require __DIR__ . '/libraries.php';
 
-Dispatcher::applyFilter('run', function($self, $params, $chain) {
+Dispatcher::applyFilter('run', function($self, $params, $chain) use ($options) {
 
 	$assets = array(
 			'css' => array(
 					'match' => "/.css$/",
 					'type' => 'text/css',
-					'name' => 'Stylesheet'
+					'name' => 'Stylesheet',
 			),
 			'js' => array(
 					'match' => "/.js$/",
@@ -47,8 +47,9 @@ Dispatcher::applyFilter('run', function($self, $params, $chain) {
 	);
 	foreach(array_keys($assets) as $type) {
 		$config = $assets[$type];
+		$config['cacheOnly'] = $options['cacheOnly'];
 		if(preg_match($config['match'], $params['request']->url)) {
-			if (readCache($params['request'], $config['type'], $config['name'] . ' does not exist')) {
+			if (readCache($params['request'], $config)) {
 				return;
 			}
 		}
@@ -65,7 +66,9 @@ Dispatcher::applyFilter('run', function($self, $params, $chain) {
  * @param  object $request
  * @return string          contents of cache file
  */
-function readCache($request, $type, $errorMessage){
+function readCache($request, array $options) {
+
+
 	$http_response_code = null;
 	if (!$content = Cache::read('default', $request->url)) {
 		// TODO: config switch
@@ -73,11 +76,11 @@ function readCache($request, $type, $errorMessage){
 			return false;
 		}
 		$http_response_code = 404;
-		$content = "404: {$errorMessage}";
+		$content = '404: ' . $options['name'] . ' does not exist';
 	}
 
 	// TODO: use lithium constructs
-	header("Content-Type: {$type}", true, $http_response_code);
+	header('Content-Type: '. $config['type'], true, $http_response_code);
 	echo $content;
 	return true;
 };
