@@ -161,7 +161,7 @@ This option, and several others are overwriteable from the `Libraries::add()` co
 		</td>
 	</tr>
 	<tr>
-		<td><strong>cacheOnly</strong><td>
+		<td><strong>cacheOnly</strong></td>
 		<td>boolean</td>
 		<td><code>false<code></td>
 		<td>
