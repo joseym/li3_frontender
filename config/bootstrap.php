@@ -9,7 +9,7 @@ use lithium\action\Dispatcher;
 /**
  * get library options, assign defaults
  */
-$options =  Libraries::get('li3_frontender') + array('source' => 'composer');
+$options =  Libraries::get('li3_frontender') + array('source' => 'composer', 'cacheOnly' => false);
 
 // Plugin Location
 defined('FRONTENDER_PATH') OR define('FRONTENDER_PATH', dirname(__DIR__));
@@ -26,50 +26,58 @@ defined('FRONTENDER_SRC') OR define('FRONTENDER_SRC', FRONTENDER_LIBS . "/asseti
 defined('CACHE_DIR') OR define('CACHE_DIR', Libraries::get(true, 'resources') . "/tmp/cache");
 
 /**
- * Load in project dependancies which include 
+ * Load in project dependancies which include
  * LessPHP, Assetic and Symfony Process component
  */
 require __DIR__ . '/libraries.php';
 
 Dispatcher::applyFilter('run', function($self, $params, $chain) {
 
-	// filter over css files
-	if(preg_match("/.css$/", $params['request']->url)) { 
-		return readCache($params['request'], 'text/css', 'Stylesheet does not exist'); 
+	$assets = array(
+			'css' => array(
+					'match' => "/.css$/",
+					'type' => 'text/css',
+					'name' => 'Stylesheet'
+			),
+			'js' => array(
+					'match' => "/.js$/",
+					'type' => 'text/javascript',
+					'name' => 'Script'
+			),
+	);
+	foreach(array_keys($assets) as $type) {
+		$config = $assets[$type];
+		if(preg_match($config['match'], $params['request']->url)) {
+			if (readCache($params['request'], $config['type'], $config['name'] . ' does not exist')) {
+				return;
+			}
+		}
+
 	}
 
-	if(preg_match("/.js$/", $params['request']->url)) { 
-		return readCache($params['request'], 'text/javascript', 'Script does not exist'); 
-	}
-
-	$result = $chain->next($self, $params, $chain);
-
-	return $result;
-
+	return $chain->next($self, $params, $chain);
 
 });
 
 /**
  * Read cache files for assets
- * Returns CSS/Js from Cache if exists, otherwise returns a 404 message
+ * Returns CSS/Js from Cache if exists
  * @param  object $request
  * @return string          contents of cache file
  */
 function readCache($request, $type, $errorMessage){
-
-	header("Content-Type: {$type}");
-
-	$key = $request->url;
-
-	// Return cached stylesheet
-	if($cache = Cache::read('default', $key)){
-		echo $cache;
-
-	// throw 404
-	} else {
-		header("Content-Type: {$type}", true, 404);
+	$http_response_code = null;
+	if (!$content = Cache::read('default', $request->url)) {
+		// TODO: config switch
+		if (!$options['cacheOnly']) {
+			return false;
+		}
+		$http_response_code = 404;
 		$content = "404: {$errorMessage}";
-		echo $content;
 	}
 
+	// TODO: use lithium constructs
+	header("Content-Type: {$type}", true, $http_response_code);
+	echo $content;
+	return true;
 };
