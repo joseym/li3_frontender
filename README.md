@@ -48,8 +48,9 @@ __More manual, bleh. Seriously, Composer is awesome__
 1. Clone/Download the plugin into your app's ``libraries`` directory.
 2. Tell your app to load the plugin by adding the following to your app's ``config/bootstrap/libraries.php``:
 
-	Libraries::add('li3_frontender');
+	Libraries::add('li3_frontender', array('source' => 'submodule'));
 
+	> Important to set the source to something else as 'composer'.
 	> Configuration options are available, standby
 
 3. Pull in the the project dependencies.
@@ -110,7 +111,8 @@ This option, and several others are overwriteable from the `Libraries::add()` co
 			'coffee' => '/usr/bin/libs/coffee',
 			'node' => '/usr/bin/libs/node'
 		),
-		'source' => 'submodule'
+		'source' => 'submodule',
+		'cacheOnly' => true
 	));
 ?>
 ~~~
@@ -152,8 +154,20 @@ This option, and several others are overwriteable from the `Libraries::add()` co
 		<td><strong>source</strong></td>
 		<td>string: <code>composer</code><br /><code>submodule</code></td>
 		<td><code>composer</code></td>
-		<td>This determines where the library will pull dependency libraries, composer uses vendor paths in `libraries/_source` whereas submodule loads librarys within this plugin `libraries/li3_frontender/libraries</td>
+		<td>
+			This determines where the library will pull dependency libraries, composer uses vendor paths in
+			`libraries/_source` whereas submodule loads librarys within this plugin `libraries/li3_frontender/libraries`.
+			Normally you only need to set this option if you do not install this plugin via composer.
+		</td>
 	</tr>
+	<tr>
+		<td><strong>cacheOnly</strong><td>
+		<td>boolean</td>
+		<td><code>false<code></td>
+		<td>
+			If true, will display a 404 if the assets could not be read from cache. For some plugins, such as
+			`li3_docs` this will result in not being able to load the css contained in the plugin.
+		</td>
 </table>
 
 ## Collaborate
