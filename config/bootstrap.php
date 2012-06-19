@@ -80,7 +80,7 @@ function readCache($request, array $options) {
 	}
 
 	// TODO: use lithium constructs
-	header('Content-Type: '. $config['type'], true, $http_response_code);
+	header('Content-Type: '. $options['type'], true, $http_response_code);
 	echo $content;
 	return true;
 };
