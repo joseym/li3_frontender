@@ -258,7 +258,7 @@ class Assets extends \lithium\template\Helper {
 
 
 		// loop thru cache and delete old cache file
-		if ($handle = opendir($cache_location)) {
+		if (!$this->_production && $handle = opendir($cache_location)) {
 
 			while (false !== ($oldfile = readdir($handle))) {
 			
