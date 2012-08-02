@@ -30,9 +30,6 @@ class Assets extends \lithium\template\Helper {
 
 		parent::_init();
 
-		$this->styles =  new AssetCollection();
-		$this->scripts = new AssetCollection();
-
 		$this->_config = Libraries::get('li3_frontender');
 
 		$defaults = array(
@@ -55,11 +52,6 @@ class Assets extends \lithium\template\Helper {
 
 		$this->_paths['styles'] =  $this->_config['assets_root'] . "/css/";
 		$this->_paths['scripts'] = $this->_config['assets_root'] . "/js/";
-
-		if($this->_config['compress'] OR $this->_production){
-			$this->styles->ensureFilter( new Yui\CssCompressorFilter( YUI_COMPRESSOR ) );
-			$this->scripts->ensureFilter( new Yui\JsCompressorFilter( YUI_COMPRESSOR ) );
-		}
 
 	}
 
@@ -105,6 +97,14 @@ class Assets extends \lithium\template\Helper {
 	 * @return [type]          [description]
 	 */
 	private function _runAssets(array $files = array(), array $options = array()) {
+
+		$this->styles =  new AssetCollection();
+		$this->scripts = new AssetCollection();
+
+		if($this->_config['compress'] OR $this->_production){
+			$this->styles->ensureFilter( new Yui\CssCompressorFilter( YUI_COMPRESSOR ) );
+			$this->scripts->ensureFilter( new Yui\JsCompressorFilter( YUI_COMPRESSOR ) );
+		}
 
 		$filename = ""; // will store concatenated filename
 
