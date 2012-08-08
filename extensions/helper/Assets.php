@@ -69,6 +69,10 @@ class Assets extends \lithium\template\Helper {
 			'path' => $this->_paths['styles']
 		);
 
+		if(gettype($stylesheets) == 'string') {
+			$stylesheets = $this->_config['manifests']['css'][$stylesheets];
+		}
+
 		$this->_runAssets($stylesheets, $options);
 
 	}
@@ -84,6 +88,10 @@ class Assets extends \lithium\template\Helper {
 			'filters' => array( new CoffeeScriptFilter($this->_config['locations']['coffee'], $this->_config['locations']['node']) ),
 			'path' => $this->_paths['scripts']
 		);
+
+		if(gettype($scripts) == 'string') {
+			$scripts = $this->_config['manifests']['js'][$scripts];
+		}
 
 		$this->_runAssets($scripts, $options);
 
