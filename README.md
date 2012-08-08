@@ -90,7 +90,7 @@ You assign page styles much like you would with the out-of-the-box Html helper
 Like the style helper, the script helper also takes an array.
 
 ~~~ php
-<?php $this->assets->script(array('plugins', 'common', 'niftythings.coffee'); ?>
+<?php $this->assets->script(array('plugins', 'common', 'niftythings.coffee')); ?>
 ~~~
 
 > Just like the `.less` file in the last example, if you pass a `.coffee` file to the script helper the plugin will compile it and serve up the proper, compiled, js. All other files are assumed `.js`. Feel free to add `.js` to these extensions if you would like.
@@ -168,7 +168,43 @@ This option, and several others are overwriteable from the `Libraries::add()` co
 			If true, will display a 404 if the assets could not be read from cache. For some plugins, such as
 			`li3_docs` this will result in not being able to load the css contained in the plugin.
 		</td>
+	</tr>
+	<tr>
+		<td><strong>manifests</strong></td>
+		<td>array</td>
+		<td><code>null<code></td>
+		<td>
+			If set, you can specify assets in named lists in the config, then reference them from the helper by name. See below.
+		</td>
+	</tr>
 </table>
+
+## Manifests
+
+Use asset manifests if you wish to specify your assets in the library config rather than in the view.
+
+First, specify the manifest like this (below, "main" is the name of a manifest for JavaScript files):
+
+~~~ php
+<?php
+	Libraries::add('li3_frontender', array(
+		'manifests' => array(
+			'js' => array(
+				'main' => array(
+					'main.coffee',
+					'popup.js'
+				)
+			)
+		)
+	));
+?>
+~~~
+
+Then, reference the manifest by name when calling the helper:
+
+~~~ php
+<?php $this->assets->script('main'); ?>
+~~~
 
 ## Collaborate
 As always, I welcome your collaboration to make things "even more betterer", so fork and contribute if you feel the need.
