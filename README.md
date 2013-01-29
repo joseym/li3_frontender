@@ -31,9 +31,6 @@ Modify your projects `composer.json` file
 
 Run `php composer.phar install` (or `php composer.phar update`) and, aside from adding it to your Libraries, you should be good to go.
 
-> __Notice:__ LessPHP does not currently provide a composer package, therefore I have branched the project and have submitted my own package until such time as [Leafo decides to adopt composer](https://github.com/leafo/lessphp/issues/216).
-> I will do my best to keep it up to date with the primary project.
-
 ### Load via Submodule
 __More manual, bleh. Seriously, Composer is awesome__
 
