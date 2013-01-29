@@ -207,4 +207,4 @@ Then, reference the manifest by name when calling the helper:
 ~~~
 
 ## Collaborate
-As always, I welcome your collaboration to make things "even more betterer", so fork and contribute if you feel the need.
+As always, I welcome your collaboration to make things "even more betterer", so fork and contribute if you feel the need; [these blokes did](https://github.com/joseym/li3_frontender/graphs/contributors) and the project is even more awesomer'r because of them.
