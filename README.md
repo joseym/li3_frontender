@@ -8,11 +8,6 @@
 
 This Plugin now uses the awesome [Assetic](https://github.com/kriswallsmith/assetic) library to power many of it's features.
 
-## Original Project
-
-> This is a branch off of my [original assets plugin ("li3_frontender")](https://github.com/joseym/li3_frontender/tree/legacy)(legacy branch)
-> If you would like to use the old version, you can clone it from there.
-
 ## Installation
 There are several ways to grab and use this project:
 
