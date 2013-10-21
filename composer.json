@@ -1,6 +1,6 @@
 {
 	"name": "joseym/li3_frontender",
-	"type": "li3-libraries",
+	"type": "lithium-library",
 	"description": "Lithium PHP asset extension",
 	"keywords": ["styles", "assets", "compression", "js", "lithium", "li3"],
 	"homepage": "https://github.com/joseym/li3_frontender/blob/master/README.md",
@@ -25,7 +25,7 @@
 
 	"require": {
 		"php": ">=5.3",
-		"joseym/li3_installer": "master",
+		"composer/installers": "dev-master",
 		"kriswallsmith/assetic": "dev-master",
 		"leafo/lessphp":"master"
 	}
